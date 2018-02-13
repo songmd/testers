@@ -1,0 +1,51 @@
+<select style="width: 240px;display: none" name="{{ widget.name }}"{% include "django/forms/widgets/attrs.html" %}>
+    {% for group_name, group_choices, group_index in widget.optgroups %}{% if group_name %}
+        <optgroup  label="{{ group_name }}">{% endif %}{% for option in group_choices %}
+        {% include option.template_name with widget=option %}{% endfor %}{% if group_name %}
+        </optgroup>{% endif %}{% endfor %}
+</select>
+
+<script type="text/javascript">
+    $(document).ready(function () {
+        $select = $('select[name="{{ widget.name }}"]')
+        $imgcontainer = $('<div></div>')
+        $select.parent().parent().append($imgcontainer)
+        urlmap = {}
+        ori_selected = ['0']
+        cur_selected = []
+
+        function build_url() {
+            url = $(this).text().split('||||')
+            if (url.length == 2) {
+                urlmap[$(this).val()] = url[1]
+                $(this).text(url[0])
+            }
+        }
+        $select.find('option').each(build_url)
+        $select.show()
+
+        setInterval(function () {
+            $select.find('option').each(build_url)
+            cur_selected.length = 0
+            $select.find('option:selected').each(function () {
+                cur_selected.push($(this).val())
+            })
+            if (cur_selected.toString() != ori_selected.toString()) {
+                ori_selected.length = 0
+                $imgcontainer.find('img').remove()
+                console.log('current2:', cur_selected)
+                for (var i = 0; i < cur_selected.length; i++) {
+
+                    ori_selected.push(cur_selected[i])
+                    $imgcontainer.append($('<img height="180px"></img>').attr('src', urlmap[cur_selected[i]]))
+                }
+                if (cur_selected.length == 0) {
+                    $imgcontainer.append($('<img height="180px"></img>').attr('src', "/estorepics/img_not_select.png"))
+                }
+            }
+        }, 100)
+
+    });
+</script>
+
+
