@@ -1,0 +1,83 @@
+{% extends "admin/base.html" %}
+
+{% load i18n admin_urls static admin_list admin_modify %}
+
+{% block extrahead %}{{ block.super }}
+    <script type="text/javascript" src="{% url 'admin:jsi18n' %}"></script>
+    {{ media }}
+{% endblock %}
+
+{% block extrastyle %}{{ block.super }}
+    <link rel="stylesheet" type="text/css" href="{% static "admin/css/forms.css" %}"/>{% endblock %}
+
+{% block coltype %}colM{% endblock %}
+
+{% if not is_popup %}
+    {% block breadcrumbs %}
+        <div class="breadcrumbs">
+            <a href="{% url 'admin:index' %}">{% trans 'Home' %}</a>
+            &rsaquo; <a
+                href="{% url 'admin:app_list' app_label=opts.app_label %}">{{ opts.app_config.verbose_name }}</a>
+            &rsaquo;
+            <a href="{% url opts|admin_urlname:'changelist' %}">{{ opts.verbose_name_plural|capfirst }}</a>
+            &rsaquo;
+            {% trans "选择 商品种类" %}
+        </div>
+    {% endblock %}
+{% endif %}
+
+{% block title %}{{ title }} | {{ site_title|default:_('Django site admin') }}{% endblock %}
+
+{% block branding %}
+    <h1 id="site-name"><a href="{% url 'admin:index' %}">{{ site_header|default:_('Django administration') }}</a></h1>
+{% endblock %}
+
+{% block content %}
+    <h1>{% trans "新建一种商品之前，需要先指定商品种类。" %}</h1>
+    {% if form.errors %}
+        <p class="errornote">
+            {% trans "请更正下列错误。" %}
+        </p>
+    {% endif %}
+    <form action method="post" novalidate>
+        <fieldset class="module aligned ">
+            <div class="form-row">
+                <div class="related-widget-wrapper">
+                    {% csrf_token %}
+                    {{ form }}
+                    {% block links %}
+                        {% spaceless %}
+
+                            <a class="related-widget-wrapper-link change-related" id="change_id_product_class"
+                               data-href-template="/admin/estore/productclass/__fk__/change/?_to_field=id&_popup=1"
+                               title="{% blocktrans %}更改选中的商品种类{% endblocktrans %}">
+                                <img src="{% static 'admin/img/icon-changelink.svg' %}" alt="{% trans '修改' %}"/>
+                            </a>
+
+                            <a class="related-widget-wrapper-link add-related" id="add_id_product_class"
+                               href="/admin/estore/productclass/add/?_to_field=id&_popup=1"
+                               title="{% blocktrans %}增加另一个 商品种类{% endblocktrans %}">
+                                <img src="{% static 'admin/img/icon-addlink.svg' %}" alt="{% trans '增加' %}"/>
+                            </a>
+
+                        {% endspaceless %}
+                    {% endblock %}
+                </div>
+            </div>
+        </fieldset>
+        <div class="submit-row">
+            <input type="submit" value="{% trans "确认" %}" name="_confirm">
+        </div>
+        {% block admin_change_form_document_ready %}
+            <script type="text/javascript"
+                    id="django-admin-form-add-constants"
+                    src="{% static 'admin/js/change_form.js' %}"
+                    {% if adminform and add %}
+                    data-model-name="{{ opts.model_name }}"
+                    {% endif %}>
+            </script>
+        {% endblock %}
+    </form>
+
+{% endblock %}
+{% block nav-global %}{% endblock %}

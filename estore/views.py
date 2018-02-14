@@ -72,3 +72,5 @@ class ShopInfoDetail(generics.RetrieveUpdateDestroyAPIView):
     serializer_class = ShopInfoSerializer
     permission_classes = (permissions.IsAuthenticatedOrReadOnly,
                           IsOwnerOrReadOnly,)
+
+
