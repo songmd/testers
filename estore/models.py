@@ -140,12 +140,81 @@ class ShopInfo(models.Model):
     def __str__(self):
         return self.name
 
+class ProductAttributesContainer(object):
+    """
+    Stolen liberally from django-eav, but simplified to be product-specific
+
+    To set attributes on a product, use the `attr` attribute:
+
+        product.attr.weight = 125
+    """
+
+    def __setstate__(self, state):
+        self.__dict__ = state
+        self.initialised = False
+
+    def __init__(self, product):
+        self.product = product
+        self.initialised = False
+
+    def initiate_attributes(self):
+        values = self.get_values().select_related('attribute')
+        for v in values:
+            setattr(self, v.attribute.code, v.value)
+        self.initialised = True
+
+    def __getattr__(self, name):
+        if not name.startswith('_') and not self.initialised:
+            self.initiate_attributes()
+            return getattr(self, name)
+        raise AttributeError(
+            _("%(obj)s has no attribute named '%(attr)s'") % {
+                'obj': self.product.get_product_class(), 'attr': name})
+
+    def validate_attributes(self):
+        for attribute in self.get_all_attributes():
+            value = getattr(self, attribute.code, None)
+            if value is None:
+                if attribute.required:
+                    raise ValidationError(
+                        _("%(attr)s attribute cannot be blank") %
+                        {'attr': attribute.code})
+            else:
+                try:
+                    attribute.validate_value(value)
+                except ValidationError as e:
+                    raise ValidationError(
+                        _("%(attr)s attribute %(err)s") %
+                        {'attr': attribute.code, 'err': e})
+
+    def get_values(self):
+        return self.product.attribute_values.all()
+
+    def get_value_by_attribute(self, attribute):
+        return self.get_values().get(attribute=attribute)
+
+    def get_all_attributes(self):
+        return self.product.product_class.attributes.all()
+
+    def get_attribute_by_code(self, code):
+        return self.get_all_attributes().get(code=code)
+
+    def __iter__(self):
+        return iter(self.get_values())
+
+    def save(self):
+        for attribute in self.get_all_attributes():
+            if hasattr(self, attribute.code):
+                value = getattr(self, attribute.code)
+                attribute.save_value(self.product, value)
 
 class Product(models.Model):
     # owner = models.ForeignKey('auth.User', related_name='goods', on_delete=models.CASCADE, blank=True, null=True,
     #                           verbose_name=_('商户'))
 
-    product_class = models.ForeignKey('ProductClass', related_name='products', on_delete=models.PROTECT, verbose_name=_('种类'))
+
+
+    product_class = models.ForeignKey('ProductClass', related_name='products', null=True, blank=True,on_delete=models.PROTECT, verbose_name=_('种类'))
 
     title = models.CharField(max_length=32, verbose_name=_('名称'))
 
@@ -170,6 +239,285 @@ class Product(models.Model):
 
     def __str__(self):
         return self.title
+
+    def __init__(self, *args, **kwargs):
+        super(Product, self).__init__(*args, **kwargs)
+        self.attr = ProductAttributesContainer(product=self)
+
+    # def clean(self):
+    #     """
+    #     Validate a product. Those are the rules:
+    #
+    #     +---------------+-------------+--------------+--------------+
+    #     |               | stand alone | parent       | child        |
+    #     +---------------+-------------+--------------+--------------+
+    #     | title         | required    | required     | optional     |
+    #     +---------------+-------------+--------------+--------------+
+    #     | product class | required    | required     | must be None |
+    #     +---------------+-------------+--------------+--------------+
+    #     | parent        | forbidden   | forbidden    | required     |
+    #     +---------------+-------------+--------------+--------------+
+    #     | stockrecords  | 0 or more   | forbidden    | 0 or more    |
+    #     +---------------+-------------+--------------+--------------+
+    #     | categories    | 1 or more   | 1 or more    | forbidden    |
+    #     +---------------+-------------+--------------+--------------+
+    #     | attributes    | optional    | optional     | optional     |
+    #     +---------------+-------------+--------------+--------------+
+    #     | rec. products | optional    | optional     | unsupported  |
+    #     +---------------+-------------+--------------+--------------+
+    #     | options       | optional    | optional     | forbidden    |
+    #     +---------------+-------------+--------------+--------------+
+    #
+    #     Because the validation logic is quite complex, validation is delegated
+    #     to the sub method appropriate for the product's structure.
+    #     """
+    #     # getattr(self, '_clean_%s' % self.structure)()
+    #     # if not self.is_parent:
+    #     self.attr.validate_attributes()
+
+    # def _clean_standalone(self):
+    #     """
+    #     Validates a stand-alone product
+    #     """
+    #     if not self.title:
+    #         raise ValidationError(_("Your product must have a title."))
+    #     if not self.product_class:
+    #         raise ValidationError(_("Your product must have a product class."))
+    #     if self.parent_id:
+    #         raise ValidationError(_("Only child products can have a parent."))
+    #
+    # def _clean_child(self):
+    #     """
+    #     Validates a child product
+    #     """
+    #     if not self.parent_id:
+    #         raise ValidationError(_("A child product needs a parent."))
+    #     if self.parent_id and not self.parent.is_parent:
+    #         raise ValidationError(
+    #             _("You can only assign child products to parent products."))
+    #     if self.product_class:
+    #         raise ValidationError(
+    #             _("A child product can't have a product class."))
+    #     if self.pk and self.categories.exists():
+    #         raise ValidationError(
+    #             _("A child product can't have a category assigned."))
+    #     # Note that we only forbid options on product level
+    #     if self.pk and self.product_options.exists():
+    #         raise ValidationError(
+    #             _("A child product can't have options."))
+    #
+    # def _clean_parent(self):
+    #     """
+    #     Validates a parent product.
+    #     """
+    #     self._clean_standalone()
+    #     if self.has_stockrecords:
+    #         raise ValidationError(
+    #             _("A parent product can't have stockrecords."))
+
+    def save(self, *args, **kwargs):
+        # if not self.slug:
+        #     self.slug = slugify(self.get_title())
+        super(Product, self).save(*args, **kwargs)
+        self.attr.save()
+
+    # Properties
+
+    # @property
+    # def is_standalone(self):
+    #     return self.structure == self.STANDALONE
+    #
+    # @property
+    # def is_parent(self):
+    #     return self.structure == self.PARENT
+    #
+    # @property
+    # def is_child(self):
+    #     return self.structure == self.CHILD
+
+    # def can_be_parent(self, give_reason=False):
+    #     """
+    #     Helps decide if a the product can be turned into a parent product.
+    #     """
+    #     reason = None
+    #     if self.is_child:
+    #         reason = _('The specified parent product is a child product.')
+    #     if self.has_stockrecords:
+    #         reason = _(
+    #             "One can't add a child product to a product with stock"
+    #             " records.")
+    #     is_valid = reason is None
+    #     if give_reason:
+    #         return is_valid, reason
+    #     else:
+    #         return is_valid
+
+    # @property
+    # def options(self):
+    #     """
+    #     Returns a set of all valid options for this product.
+    #     It's possible to have options product class-wide, and per product.
+    #     """
+    #     pclass_options = self.get_product_class().options.all()
+    #     return set(pclass_options) or set(self.product_options.all())
+
+    # @property
+    # def is_shipping_required(self):
+    #     return self.get_product_class().requires_shipping
+
+    # @property
+    # def has_stockrecords(self):
+    #     """
+    #     Test if this product has any stockrecords
+    #     """
+    #     return self.stockrecords.exists()
+
+    # @property
+    # def num_stockrecords(self):
+    #     return self.stockrecords.count()
+
+    # @property
+    # def attribute_summary(self):
+    #     """
+    #     Return a string of all of a product's attributes
+    #     """
+    #     attributes = self.attribute_values.all()
+    #     pairs = [attribute.summary() for attribute in attributes]
+    #     return ", ".join(pairs)
+
+    # def get_title(self):
+    #     """
+    #     Return a product's title or it's parent's title if it has no title
+    #     """
+    #     title = self.title
+    #     if not title and self.parent_id:
+    #         title = self.parent.title
+    #     return title
+    # get_title.short_description = pgettext_lazy(u"Product title", u"Title")
+
+    # def get_product_class(self):
+    #     """
+    #     Return a product's item class. Child products inherit their parent's.
+    #     """
+    #     if self.is_child:
+    #         return self.parent.product_class
+    #     else:
+    #         return self.product_class
+    # get_product_class.short_description = _("Product class")
+
+    # def get_is_discountable(self):
+    #     """
+    #     At the moment, is_discountable can't be set individually for child
+    #     products; they inherit it from their parent.
+    #     """
+    #     if self.is_child:
+    #         return self.parent.is_discountable
+    #     else:
+    #         return self.is_discountable
+
+    # def get_categories(self):
+    #     """
+    #     Return a product's categories or parent's if there is a parent product.
+    #     """
+    #     if self.is_child:
+    #         return self.parent.categories
+    #     else:
+    #         return self.categories
+    # get_categories.short_description = _("Categories")
+
+    # Images
+
+    # def get_missing_image(self):
+    #     """
+    #     Returns a missing image object.
+    #     """
+    #     # This class should have a 'name' property so it mimics the Django file
+    #     # field.
+    #     return MissingProductImage()
+    #
+    # def get_all_images(self):
+    #     if self.is_child and not self.images.exists():
+    #         return self.parent.images.all()
+    #     return self.images.all()
+
+    # def primary_image(self):
+    #     """
+    #     Returns the primary image for a product. Usually used when one can
+    #     only display one product image, e.g. in a list of products.
+    #     """
+    #     images = self.get_all_images()
+    #     ordering = self.images.model.Meta.ordering
+    #     if not ordering or ordering[0] != 'display_order':
+    #         # Only apply order_by() if a custom model doesn't use default
+    #         # ordering. Applying order_by() busts the prefetch cache of
+    #         # the ProductManager
+    #         images = images.order_by('display_order')
+    #     try:
+    #         return images[0]
+    #     except IndexError:
+    #         # We return a dict with fields that mirror the key properties of
+    #         # the ProductImage class so this missing image can be used
+    #         # interchangeably in templates.  Strategy pattern ftw!
+    #         return {
+    #             'original': self.get_missing_image(),
+    #             'caption': '',
+    #             'is_missing': True}
+
+    # Updating methods
+
+    # def update_rating(self):
+    #     """
+    #     Recalculate rating field
+    #     """
+    #     self.rating = self.calculate_rating()
+    #     self.save()
+    # update_rating.alters_data = True
+
+    # def calculate_rating(self):
+    #     """
+    #     Calculate rating value
+    #     """
+    #     result = self.reviews.filter(
+    #         status=self.reviews.model.APPROVED
+    #     ).aggregate(
+    #         sum=Sum('score'), count=Count('id'))
+    #     reviews_sum = result['sum'] or 0
+    #     reviews_count = result['count'] or 0
+    #     rating = None
+    #     if reviews_count > 0:
+    #         rating = float(reviews_sum) / reviews_count
+    #     return rating
+
+    # def has_review_by(self, user):
+    #     if user.is_anonymous:
+    #         return False
+    #     return self.reviews.filter(user=user).exists()
+
+    # def is_review_permitted(self, user):
+    #     """
+    #     Determines whether a user may add a review on this product.
+    #
+    #     Default implementation respects OSCAR_ALLOW_ANON_REVIEWS and only
+    #     allows leaving one review per user and product.
+    #
+    #     Override this if you want to alter the default behaviour; e.g. enforce
+    #     that a user purchased the product to be allowed to leave a review.
+    #     """
+    #     if user.is_authenticated or settings.OSCAR_ALLOW_ANON_REVIEWS:
+    #         return not self.has_review_by(user)
+    #     else:
+    #         return False
+    #
+    # @cached_property
+    # def num_approved_reviews(self):
+    #     return self.reviews.approved().count()
+    #
+    # @property
+    # def sorted_recommended_products(self):
+    #     """Keeping order by recommendation ranking."""
+    #     return [r.recommendation for r in self.primary_recommendations
+    #                                           .select_related('recommendation').all()]
+
 
 class SelectProductClass(models.Model):
     product_class = models.ForeignKey(
