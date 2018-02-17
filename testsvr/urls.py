@@ -20,9 +20,9 @@ from django.conf.urls import url, include
 from django.conf import settings
 from django.conf.urls.static import static
 
-admin.AdminSite.site_header = '常鑫信息后台管理'
+admin.AdminSite.site_header = '常鑫信息后台'
 admin.AdminSite.site_url = None
-admin.AdminSite.index_title = '管理首页'
+admin.AdminSite.index_title = '首页'
 
 urlpatterns = [
                   path('admin/', admin.site.urls),

@@ -83,7 +83,7 @@ class Picture(models.Model):
     class Meta:
         # name = '1'
         verbose_name = _('图片')
-        verbose_name_plural = _('图片管理')
+        verbose_name_plural = _('图片')
 
     def __str__(self):
         return '%s||||%s' % (self.desc, self.picture.url)
@@ -108,7 +108,7 @@ class ProductCategory(MPTTModel):
 
     class Meta:
         verbose_name = _('商品分类')
-        verbose_name_plural = _('商品分类管理')
+        verbose_name_plural = _('商品分类')
 
 
 class ShopInfo(models.Model):
@@ -135,7 +135,7 @@ class ShopInfo(models.Model):
     class Meta:
         # name = '1'
         verbose_name = _('店铺')
-        verbose_name_plural = _('店铺管理')
+        verbose_name_plural = _('店铺')
 
     def __str__(self):
         return self.name
@@ -238,7 +238,7 @@ class Product(models.Model):
 
     class Meta:
         verbose_name = _('商品')
-        verbose_name_plural = _('商品管理')
+        verbose_name_plural = _('商品')
 
     def __str__(self):
         return self.title
@@ -531,7 +531,7 @@ class ProductClass(models.Model):
 
     class Meta:
         verbose_name = _('商品种类')
-        verbose_name_plural = _('商品种类管理')
+        verbose_name_plural = _('商品种类')
 
     def __str__(self):
         return self.name
@@ -593,7 +593,7 @@ class ProductAttribute(models.Model):
 
     class Meta:
         verbose_name = _('商品属性')
-        verbose_name_plural = _('商品属性管理')
+        verbose_name_plural = _('商品属性')
 
     def clean(self):
         if self.type in [ProductAttribute.OPTION, ProductAttribute.MULTI_OPTION] and self.option_group is None:
@@ -858,14 +858,14 @@ class AttributeOptionGroup(models.Model):
     """
     name = models.CharField(_('名称'), max_length=32)
 
-    date_time = models.DateTimeField(blank=True, null=True)
+    # date_time = models.DateTimeField(blank=True, null=True)
 
     def __str__(self):
         return self.name
 
     class Meta:
         verbose_name = _('选项组')
-        verbose_name_plural = _('选项组管理')
+        verbose_name_plural = _('选项组')
 
     # @property
     def option_summary(self):
@@ -893,4 +893,4 @@ class AttributeOption(models.Model):
     class Meta:
         unique_together = ('group', 'option')
         verbose_name = _('选项')
-        verbose_name_plural = _('选项管理')
+        verbose_name_plural = _('选项')

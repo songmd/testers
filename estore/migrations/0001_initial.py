@@ -24,7 +24,7 @@ class Migration(migrations.Migration):
             ],
             options={
                 'verbose_name': '选项',
-                'verbose_name_plural': '选项管理',
+                'verbose_name_plural': '选项',
             },
         ),
         migrations.CreateModel(
@@ -35,7 +35,7 @@ class Migration(migrations.Migration):
             ],
             options={
                 'verbose_name': '选项组',
-                'verbose_name_plural': '选项组管理',
+                'verbose_name_plural': '选项组',
             },
         ),
         migrations.CreateModel(
@@ -47,7 +47,7 @@ class Migration(migrations.Migration):
             ],
             options={
                 'verbose_name': '图片',
-                'verbose_name_plural': '图片管理',
+                'verbose_name_plural': '图片',
             },
         ),
         migrations.CreateModel(
@@ -62,7 +62,7 @@ class Migration(migrations.Migration):
             ],
             options={
                 'verbose_name': '商品',
-                'verbose_name_plural': '商品管理',
+                'verbose_name_plural': '商品',
             },
         ),
         migrations.CreateModel(
@@ -77,7 +77,7 @@ class Migration(migrations.Migration):
             ],
             options={
                 'verbose_name': '商品属性',
-                'verbose_name_plural': '商品属性管理',
+                'verbose_name_plural': '商品属性',
             },
         ),
         migrations.CreateModel(
@@ -114,7 +114,7 @@ class Migration(migrations.Migration):
             ],
             options={
                 'verbose_name': '商品分类',
-                'verbose_name_plural': '商品分类管理',
+                'verbose_name_plural': '商品分类',
             },
         ),
         migrations.CreateModel(
@@ -126,7 +126,7 @@ class Migration(migrations.Migration):
             ],
             options={
                 'verbose_name': '商品种类',
-                'verbose_name_plural': '商品种类管理',
+                'verbose_name_plural': '商品种类',
             },
         ),
         migrations.CreateModel(
@@ -144,7 +144,7 @@ class Migration(migrations.Migration):
             ],
             options={
                 'verbose_name': '店铺',
-                'verbose_name_plural': '店铺管理',
+                'verbose_name_plural': '店铺',
             },
         ),
         migrations.CreateModel(
