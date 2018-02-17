@@ -1,0 +1,14 @@
+
+table {
+    /*table-layout: fixed;*/
+}
+
+td.field-name input{
+    width: 160px
+}
+td.field-code input{
+    width: 120px
+}
+td.field-type select{
+    width: 120px;
+}

@@ -102,7 +102,7 @@ class ProductCategory(MPTTModel):
         display = self.name
         pp = self.parent
         while pp is not None:
-            display = '%s->%s' % (pp.name,display)
+            display = '%s->%s' % (pp.name, display)
             pp = pp.parent
         return display
 
@@ -139,6 +139,7 @@ class ShopInfo(models.Model):
 
     def __str__(self):
         return self.name
+
 
 class ProductAttributesContainer(object):
     """
@@ -208,13 +209,14 @@ class ProductAttributesContainer(object):
                 value = getattr(self, attribute.code)
                 attribute.save_value(self.product, value)
 
+
 class Product(models.Model):
     # owner = models.ForeignKey('auth.User', related_name='goods', on_delete=models.CASCADE, blank=True, null=True,
     #                           verbose_name=_('商户'))
 
-
-
-    product_class = models.ForeignKey('ProductClass', related_name='products', null=True, blank=True,on_delete=models.PROTECT, verbose_name=_('种类'))
+    product_class = models.ForeignKey('ProductClass', related_name='products', null=True, blank=True,
+                                      on_delete=models.PROTECT, verbose_name=_('种类'))
+    # product_class.hidden = True
 
     title = models.CharField(max_length=32, verbose_name=_('名称'))
 
@@ -224,7 +226,8 @@ class Product(models.Model):
 
     categories = models.ManyToManyField('ProductCategory', blank=True, verbose_name=_('所属分类'))
 
-    attributies = models.ManyToManyField('ProductAttribute', through='ProductAttributeValue', blank=True, verbose_name=_('属性'))
+    attributies = models.ManyToManyField('ProductAttribute', through='ProductAttributeValue', blank=True,
+                                         verbose_name=_('属性'))
 
     rating = models.FloatField(_('评价'), null=True, blank=True, editable=False)
 
@@ -244,36 +247,36 @@ class Product(models.Model):
         super(Product, self).__init__(*args, **kwargs)
         self.attr = ProductAttributesContainer(product=self)
 
-    # def clean(self):
-    #     """
-    #     Validate a product. Those are the rules:
-    #
-    #     +---------------+-------------+--------------+--------------+
-    #     |               | stand alone | parent       | child        |
-    #     +---------------+-------------+--------------+--------------+
-    #     | title         | required    | required     | optional     |
-    #     +---------------+-------------+--------------+--------------+
-    #     | product class | required    | required     | must be None |
-    #     +---------------+-------------+--------------+--------------+
-    #     | parent        | forbidden   | forbidden    | required     |
-    #     +---------------+-------------+--------------+--------------+
-    #     | stockrecords  | 0 or more   | forbidden    | 0 or more    |
-    #     +---------------+-------------+--------------+--------------+
-    #     | categories    | 1 or more   | 1 or more    | forbidden    |
-    #     +---------------+-------------+--------------+--------------+
-    #     | attributes    | optional    | optional     | optional     |
-    #     +---------------+-------------+--------------+--------------+
-    #     | rec. products | optional    | optional     | unsupported  |
-    #     +---------------+-------------+--------------+--------------+
-    #     | options       | optional    | optional     | forbidden    |
-    #     +---------------+-------------+--------------+--------------+
-    #
-    #     Because the validation logic is quite complex, validation is delegated
-    #     to the sub method appropriate for the product's structure.
-    #     """
-    #     # getattr(self, '_clean_%s' % self.structure)()
-    #     # if not self.is_parent:
-    #     self.attr.validate_attributes()
+    def clean(self):
+        """
+        Validate a product. Those are the rules:
+
+        +---------------+-------------+--------------+--------------+
+        |               | stand alone | parent       | child        |
+        +---------------+-------------+--------------+--------------+
+        | title         | required    | required     | optional     |
+        +---------------+-------------+--------------+--------------+
+        | product class | required    | required     | must be None |
+        +---------------+-------------+--------------+--------------+
+        | parent        | forbidden   | forbidden    | required     |
+        +---------------+-------------+--------------+--------------+
+        | stockrecords  | 0 or more   | forbidden    | 0 or more    |
+        +---------------+-------------+--------------+--------------+
+        | categories    | 1 or more   | 1 or more    | forbidden    |
+        +---------------+-------------+--------------+--------------+
+        | attributes    | optional    | optional     | optional     |
+        +---------------+-------------+--------------+--------------+
+        | rec. products | optional    | optional     | unsupported  |
+        +---------------+-------------+--------------+--------------+
+        | options       | optional    | optional     | forbidden    |
+        +---------------+-------------+--------------+--------------+
+
+        Because the validation logic is quite complex, validation is delegated
+        to the sub method appropriate for the product's structure.
+        """
+        # getattr(self, '_clean_%s' % self.structure)()
+        # if not self.is_parent:
+        self.attr.validate_attributes()
 
     # def _clean_standalone(self):
     #     """
@@ -519,20 +522,13 @@ class Product(models.Model):
     #                                           .select_related('recommendation').all()]
 
 
-class SelectProductClass(models.Model):
-    product_class = models.ForeignKey(
-        'ProductClass',
-        blank=True,
-        on_delete=models.CASCADE,
-        related_name='selected',
-        verbose_name=_("商品种类"))
-
 class ProductClass(models.Model):
     # owner = models.ForeignKey('auth.User', related_name='goods_types', on_delete=models.CASCADE, blank=True, null=True,
     #                           verbose_name=_('商户'))
     name = models.CharField(max_length=32, verbose_name=_('种类名称'))
     requires_shipping = models.BooleanField(_("是否运送"),
                                             default=True)
+
     class Meta:
         verbose_name = _('商品种类')
         verbose_name_plural = _('商品种类管理')
@@ -540,9 +536,11 @@ class ProductClass(models.Model):
     def __str__(self):
         return self.name
 
+
 class ProductAttribute(models.Model):
     name = models.CharField(max_length=32, verbose_name=_('属性名称'))
-    code = models.CharField(max_length=32, verbose_name=_('属性编码'))
+
+    code = models.SlugField(max_length=32, verbose_name=_('属性编码'))
 
     product_class = models.ForeignKey(
         'ProductClass',
@@ -565,6 +563,7 @@ class ProductAttribute(models.Model):
     FILE = "file"
     IMAGE = "image"
     TYPE_CHOICES = (
+        ('', _('-------------')),
         (TEXT, _("文字")),
         (INTEGER, _("整数")),
         (BOOLEAN, _("是/否")),
@@ -592,10 +591,13 @@ class ProductAttribute(models.Model):
         help_text=_('如果属性类型是"选项"或者"多选项",需额外选择一个选项组'))
     required = models.BooleanField(_('是否必需'), default=False)
 
-
     class Meta:
         verbose_name = _('商品属性')
         verbose_name_plural = _('商品属性管理')
+
+    def clean(self):
+        if self.type in [ProductAttribute.OPTION, ProductAttribute.MULTI_OPTION] and self.option_group is None:
+            raise ValidationError({'option_group': _('属性类型为选项或者多选项，必须指定所属选项组')})
 
     def __str__(self):
         return self.name
@@ -611,7 +613,6 @@ class ProductAttribute(models.Model):
     @property
     def is_file(self):
         return self.type in [self.FILE, self.IMAGE]
-
 
     def _save_file(self, value_obj, value):
         # File fields in Django are treated differently, see
@@ -743,6 +744,7 @@ class ProductAttribute(models.Model):
 
     _validate_image = _validate_file
 
+
 class ProductAttributeValue(models.Model):
     """
     The "through" model for the m2m relationship between catalogue.Product and
@@ -779,7 +781,6 @@ class ProductAttributeValue(models.Model):
         on_delete=models.CASCADE,
         verbose_name=_("单选值"))
 
-
     def _get_value(self):
         value = getattr(self, 'value_%s' % self.attribute.type)
         if hasattr(value, 'all'):
@@ -787,11 +788,14 @@ class ProductAttributeValue(models.Model):
         return value
 
     def _set_value(self, new_value):
-        # if self.attribute.is_option and isinstance(new_value, six.string_types):
-        #     # Need to look up instance of AttributeOption
-        #     new_value = self.attribute.option_group.options.get(
-        #         option=new_value)
-        setattr(self, 'value_%s' % self.attribute.type, new_value)
+        if self.attribute.is_option and isinstance(new_value, six.string_types):
+            # Need to look up instance of AttributeOption
+            new_value = self.attribute.option_group.options.get(
+                option=new_value)
+        if self.attribute.is_multi_option:
+            self.value_multi_option.set(new_value)
+        else:
+            setattr(self, 'value_%s' % self.attribute.type, new_value)
 
     value = property(_get_value, _set_value)
 
@@ -830,8 +834,6 @@ class ProductAttributeValue(models.Model):
     def _richtext_as_text(self):
         return strip_tags(self.value)
 
-
-
     @property
     def value_as_html(self):
         """
@@ -847,7 +849,6 @@ class ProductAttributeValue(models.Model):
         return mark_safe(self.value)
 
 
-
 class AttributeOptionGroup(models.Model):
     """
     Defines a group of options that collectively may be used as an
@@ -856,6 +857,8 @@ class AttributeOptionGroup(models.Model):
     For example, Language
     """
     name = models.CharField(_('名称'), max_length=32)
+
+    date_time = models.DateTimeField(blank=True, null=True)
 
     def __str__(self):
         return self.name
@@ -870,7 +873,6 @@ class AttributeOptionGroup(models.Model):
         return ", ".join(options)
 
     option_summary.short_description = _('可选项')
-
 
 
 class AttributeOption(models.Model):
