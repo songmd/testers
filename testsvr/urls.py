@@ -20,7 +20,7 @@ from django.conf.urls import url, include
 from django.conf import settings
 from django.conf.urls.static import static
 
-admin.AdminSite.site_header = '常鑫信息后台'
+admin.AdminSite.site_header = '三语信息技术有限公司'
 admin.AdminSite.site_url = None
 admin.AdminSite.index_title = '首页'
 
