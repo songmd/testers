@@ -17,6 +17,45 @@ from django.utils.decorators import method_decorator
 from django.views.decorators.csrf import csrf_protect
 from django.contrib.admin.utils import flatten_fieldsets
 from django.contrib.admin import helpers, widgets
+from django.db.models import Q
+
+
+# from guardian.admin import GuardedModelAdmin
+
+class EstoreModelAdminMixin(object):
+
+    def get_queryset(self, request):
+        qs = super(EstoreModelAdminMixin, self).get_queryset(request)
+        if request.user.is_superuser:
+            return qs
+        return qs.filter(Q(owner=request.user) | Q(owner__isnull=True))
+
+    def save_model(self, request, obj, form, change):
+        # 超级用户写入的东西默认是给所有人看到
+        if hasattr(obj, 'owner') and obj.owner is None and not request.user.is_superuser:
+            obj.owner = request.user
+        super(EstoreModelAdminMixin, self).save_model(request, obj, form, change)
+
+    def has_add_permission(self, request):
+        return super(EstoreModelAdminMixin, self).has_add_permission(request) or request.user.is_staff
+
+    def has_change_permission(self, request, obj=None):
+
+        has_perm = super(EstoreModelAdminMixin, self).has_change_permission(request, obj)
+        for_staff_show = request.user.is_staff and obj is None
+        owner = getattr(obj, 'owner', None)
+        is_owner_obj = owner is None or owner == request.user
+        return has_perm or for_staff_show or is_owner_obj
+
+    def has_delete_permission(self, request, obj=None):
+        has_perm = super(EstoreModelAdminMixin, self).has_delete_permission(request, obj)
+        if has_perm:
+            return True
+        for_staff_show = request.user.is_staff and obj is None
+        owner = getattr(obj, 'owner', None)
+        is_owner_obj = owner is None or owner == request.user
+        return for_staff_show or is_owner_obj
+
 
 csrf_protect_m = method_decorator(csrf_protect)
 
@@ -55,8 +94,8 @@ def _attr_date_field(attribute):
 
 def _attr_datetime_field(attribute):
     return forms.fields.SplitDateTimeField(label=attribute.name,
-                               required=attribute.required,
-                               widget=widgets.AdminSplitDateTime)
+                                           required=attribute.required,
+                                           widget=widgets.AdminSplitDateTime)
 
 
 def _attr_option_field(attribute):
@@ -97,8 +136,15 @@ def _attr_image_field(attribute):
 
 
 @admin.register(ProductCategory)
-class ProductCategoryAdmin(MPTTModelAdmin):
+class ProductCategoryAdmin(EstoreModelAdminMixin, MPTTModelAdmin):
     list_display = ('name', 'parent')
+
+    def formfield_for_foreignkey(self, db_field, request, **kwargs):
+
+        if db_field.name == "parent":
+            kwargs["queryset"] = ProductCategory.objects.filter(owner=request.user)
+
+        return super(ProductCategoryAdmin, self).formfield_for_foreignkey(db_field, request, **kwargs)
 
 
 from django.urls import reverse
@@ -123,7 +169,7 @@ class ProductAdminForm(forms.ModelForm):
                 # self.instance = instance
         super(ProductAdminForm, self).__init__(*args, **kwargs)
 
-        if self.instance.product_class is None:#get #add
+        if self.instance.product_class is None:  # get #add
             self.instance.product_class = ProductClass.objects.get(pk=self.initial['product_class'])
 
         #
@@ -178,7 +224,7 @@ class ProductAdminForm(forms.ModelForm):
 
 
 @admin.register(Product)
-class ProductAdmin(admin.ModelAdmin):
+class ProductAdmin(EstoreModelAdminMixin, admin.ModelAdmin):
     FIELD_FACTORIES = {
         "text": _attr_text_field,
         "richtext": _attr_textarea_field,
@@ -218,9 +264,9 @@ class ProductAdmin(admin.ModelAdmin):
             'media': self.media,
         })
 
-        ProductClass.objects.all()
+
         choices = [('', '------------'), ]
-        for ele in ProductClass.objects.all():
+        for ele in ProductClass.objects.filter(owner=request.user):
             choices.append((ele.id, ele))
 
         if request.method == 'POST':
@@ -243,10 +289,7 @@ class ProductAdmin(admin.ModelAdmin):
         # line by a linebreak
         return instance.product_class
 
-        # short_description functions like a model field's verbose_name
-
     product_class_read_only.short_description = _('商品种类')
-    # in this example, we have used HTML tags in the output
     product_class_read_only.allow_tags = True
 
     def get_form(self, request, obj=None, **kwargs):
@@ -257,7 +300,6 @@ class ProductAdmin(admin.ModelAdmin):
             product_class = ProductClass.objects.get(pk=request.GET['product_class'])
 
         new_fields = {}
-        # initial = self.instance.groups.all()
         for atrributes in product_class.attributes.all():
             # field_name = '{0}_groups'.format(atrributes.name.lower())
             field_name = 'attr_%s' % atrributes.code
@@ -305,39 +347,53 @@ class ProductAdmin(admin.ModelAdmin):
         )
         return fieldsets
 
+    def formfield_for_manytomany(self, db_field, request, **kwargs):
+        if db_field.name == "pics":
+            kwargs["queryset"] = Picture.objects.filter(owner=request.user)
+        if db_field.name == "categories":
+            kwargs["queryset"] = ProductCategory.objects.filter(owner=request.user)
 
-class AttributeOptionInline(admin.TabularInline):
+        return super(ProductAdmin, self).formfield_for_manytomany(db_field, request, **kwargs)
+
+class AttributeOptionInline(EstoreModelAdminMixin, admin.TabularInline):
     model = AttributeOption
 
 
 @admin.register(AttributeOptionGroup)
-class AttributeOptionGroupAdmin(admin.ModelAdmin):
-    list_display = ('name', 'option_summary')
+class AttributeOptionGroupAdmin(EstoreModelAdminMixin, admin.ModelAdmin):
+    list_display = ('name', 'option_summary','owner')
     inlines = [AttributeOptionInline, ]
 
 
-class ProductAttributeInline(admin.TabularInline):
+class ProductAttributeInline(EstoreModelAdminMixin, admin.TabularInline):
     template = 'tabular.html'
     model = ProductAttribute
-    fields = ('name','required','code','type','option_group')
+    fields = ('name', 'required', 'code', 'type', 'option_group')
 
     @property
     def media(self):
         return super(ProductAttributeInline, self).media + forms.Media(css={'all': ('css/estore.css',)})
 
 
+    def formfield_for_foreignkey(self, db_field, request, **kwargs):
+        if db_field.name == "option_group":
+            kwargs["queryset"] = AttributeOptionGroup.objects.filter(owner=request.user)
+
+        return super(ProductAttributeInline, self).formfield_for_foreignkey(db_field, request, **kwargs)
+
+
 @admin.register(ProductClass)
-class ProductClassAdmin(admin.ModelAdmin):
+class ProductClassAdmin(EstoreModelAdminMixin, admin.ModelAdmin):
     list_display = ('name', 'requires_shipping')
     inlines = [ProductAttributeInline]
 
 
 @admin.register(Picture)
-class PictureAdmin(admin.ModelAdmin):
+class PictureAdmin(EstoreModelAdminMixin, admin.ModelAdmin):
     list_display = ('desc', 'display_picture', 'display_path',)
     list_display_links = ('desc', 'display_picture', 'display_path',)
 
 
 @admin.register(ShopInfo)
-class ShopInfoAdmin(admin.ModelAdmin):
+class ShopInfoAdmin(EstoreModelAdminMixin, admin.ModelAdmin):
     list_display = ('name', 'type')

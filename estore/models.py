@@ -58,9 +58,8 @@ class Snippet(models.Model):
 
 
 class Picture(models.Model):
-    # owner = models.ForeignKey('auth.User', related_name='pictures', on_delete=models.CASCADE, blank=True, null=True,
-    #                           verbose_name=_('商户'))
-    # picture = models.ImageField(upload_to='estorepics', blank=True, null=True, verbose_name=_('图片'))
+    owner = models.ForeignKey('auth.User', on_delete=models.CASCADE, blank=True, null=True, editable=False)
+
     desc = models.CharField(max_length=32, verbose_name=_('描述'))
     picture = ImageFieldEx(upload_to='estorepics', verbose_name=_('图片'))
 
@@ -91,6 +90,8 @@ class Picture(models.Model):
 
 
 class ProductCategory(MPTTModel):
+    owner = models.ForeignKey('auth.User', on_delete=models.CASCADE, blank=True, null=True, editable=False)
+
     # owner = models.ForeignKey('auth.User', related_name='categories', on_delete=models.SET_NULL, blank=True, null=True,
     #                           verbose_name=_('商户'))
     name = models.CharField(max_length=32, verbose_name=_('分类名称'))
@@ -112,6 +113,9 @@ class ProductCategory(MPTTModel):
 
 
 class ShopInfo(models.Model):
+
+    owner = models.ForeignKey('auth.User', on_delete=models.CASCADE )
+
     name = models.CharField(max_length=32, verbose_name=_('店铺名称'))
 
     # owner = models.ForeignKey('auth.User', related_name='shops', on_delete=models.CASCADE, blank=True, null=True,
@@ -136,6 +140,7 @@ class ShopInfo(models.Model):
         # name = '1'
         verbose_name = _('店铺')
         verbose_name_plural = _('店铺')
+        # permissions = (("view", _("浏览")),)
 
     def __str__(self):
         return self.name
@@ -211,8 +216,8 @@ class ProductAttributesContainer(object):
 
 
 class Product(models.Model):
-    # owner = models.ForeignKey('auth.User', related_name='goods', on_delete=models.CASCADE, blank=True, null=True,
-    #                           verbose_name=_('商户'))
+
+    owner = models.ForeignKey('auth.User',on_delete=models.CASCADE, blank=True, null=True,editable=False)
 
     product_class = models.ForeignKey('ProductClass', related_name='products', null=True, blank=True,
                                       on_delete=models.PROTECT, verbose_name=_('种类'))
@@ -523,8 +528,7 @@ class Product(models.Model):
 
 
 class ProductClass(models.Model):
-    # owner = models.ForeignKey('auth.User', related_name='goods_types', on_delete=models.CASCADE, blank=True, null=True,
-    #                           verbose_name=_('商户'))
+    owner = models.ForeignKey('auth.User', on_delete=models.CASCADE, blank=True, null=True, editable=False)
     name = models.CharField(max_length=32, verbose_name=_('种类名称'))
     requires_shipping = models.BooleanField(_("是否运送"),
                                             default=True)
@@ -538,6 +542,8 @@ class ProductClass(models.Model):
 
 
 class ProductAttribute(models.Model):
+    owner = models.ForeignKey('auth.User', on_delete=models.CASCADE, blank=True, null=True, editable=False)
+
     name = models.CharField(max_length=32, verbose_name=_('属性名称'))
 
     code = models.SlugField(max_length=32, verbose_name=_('属性编码'))
@@ -753,6 +759,8 @@ class ProductAttributeValue(models.Model):
 
     For example: number_of_pages = 295
     """
+    owner = models.ForeignKey('auth.User', on_delete=models.CASCADE, blank=True, null=True, editable=False)
+
     attribute = models.ForeignKey(
         'ProductAttribute',
         on_delete=models.CASCADE,
@@ -856,6 +864,8 @@ class AttributeOptionGroup(models.Model):
 
     For example, Language
     """
+    owner = models.ForeignKey('auth.User', on_delete=models.CASCADE, blank=True, null=True, editable=False)
+
     name = models.CharField(_('名称'), max_length=32)
 
     # date_time = models.DateTimeField(blank=True, null=True)
@@ -880,6 +890,8 @@ class AttributeOption(models.Model):
     Provides an option within an option group for an attribute type
     Examples: In a Language group, English, Greek, French
     """
+    owner = models.ForeignKey('auth.User', on_delete=models.CASCADE, blank=True, null=True, editable=False)
+
     group = models.ForeignKey(
         'AttributeOptionGroup',
         on_delete=models.CASCADE,

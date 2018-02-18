@@ -39,8 +39,7 @@ INSTALLED_APPS = [
     # 'estore',
     'estore.apps.EstoreConfig',
     'mptt',
-    'imagekit',
-    # 'versatileimagefield',
+    # 'guardian',
 ]
 
 REST_FRAMEWORK = {
@@ -60,6 +59,11 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
+
+AUTHENTICATION_BACKENDS = (
+    'django.contrib.auth.backends.ModelBackend', # this is default
+    # 'guardian.backends.ObjectPermissionBackend',
+)
 
 ROOT_URLCONF = 'testsvr.urls'
 

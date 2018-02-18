@@ -30,3 +30,9 @@ urlpatterns = [
                   url('^', include('django.contrib.auth.urls'))
               ] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT) \
               + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+
+#@todo 后台管理 增加自动权限控制
+
+#@todo 实现一键式增加新用户、新店铺、创建新组等等。
+
+#@todo 上传图片不成功，返回之后，图片不显示。
