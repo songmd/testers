@@ -44,7 +44,16 @@ url(r'^snippets/(?P<pk>[0-9]+)/highlight/$', views.SnippetHighlight.as_view()),
     url(r'^users/(?P<pk>[0-9]+)/$', views.UserDetail.as_view()),
 
     url(r'^shops/$', views.ShopInfoList.as_view()),
-    url(r'^shops/(?P<pk>[0-9]+)$', views.ShopInfoDetail.as_view()),
+    url(r'^shops/(?P<pk>[\w]+)$', views.ShopInfoDetail.as_view()),
+
+    # url(r'^products(?:/shop_id/(?P<shop_id>[-\w]+))?/$', views.ProductList.as_view()),
+    url(r'^products/$', views.ProductList.as_view()),
+    url(r'^basket/(?P<pk>[\w]+)$', views.BasketView.as_view()),
+    url(r'^basketunits/(?P<user_token>[\w]+)/$', views.BasketUnitView.as_view()),
+    url(r'^basketunits/(?P<user_token>[\w]+)/(?P<pk>[\w]+)/$', views.BasketUnitDeleteView.as_view()),
+    # url(r'^products/(?P<pk>[\w]+)$', views.P.as_view()),
+
+    url(r'login/$',views.customer_login,name='customer_login')
 
 ]
 
