@@ -20,9 +20,15 @@ from django.contrib.admin import helpers, widgets
 from django.db.models import Q
 
 
-# from guardian.admin import GuardedModelAdmin
+# @todo   小程序登录
+# @todo   订单、购物栏
 
 class EstoreModelAdminMixin(object):
+
+    def has_module_permission(self, request):
+        if super(EstoreModelAdminMixin, self).has_module_permission(request):
+            return True
+        return request.user.is_superuser or request.user.is_staff
 
     def get_queryset(self, request):
         qs = super(EstoreModelAdminMixin, self).get_queryset(request)
@@ -44,7 +50,7 @@ class EstoreModelAdminMixin(object):
         has_perm = super(EstoreModelAdminMixin, self).has_change_permission(request, obj)
         for_staff_show = request.user.is_staff and obj is None
         owner = getattr(obj, 'owner', None)
-        is_owner_obj = owner is None or owner == request.user
+        is_owner_obj = owner == request.user
         return has_perm or for_staff_show or is_owner_obj
 
     def has_delete_permission(self, request, obj=None):
@@ -53,7 +59,7 @@ class EstoreModelAdminMixin(object):
             return True
         for_staff_show = request.user.is_staff and obj is None
         owner = getattr(obj, 'owner', None)
-        is_owner_obj = owner is None or owner == request.user
+        is_owner_obj = owner == request.user
         return for_staff_show or is_owner_obj
 
 
@@ -140,7 +146,6 @@ class ProductCategoryAdmin(EstoreModelAdminMixin, MPTTModelAdmin):
     list_display = ('name', 'parent')
 
     def formfield_for_foreignkey(self, db_field, request, **kwargs):
-
         if db_field.name == "parent":
             kwargs["queryset"] = ProductCategory.objects.filter(owner=request.user)
 
@@ -171,10 +176,6 @@ class ProductAdminForm(forms.ModelForm):
 
         if self.instance.product_class is None:  # get #add
             self.instance.product_class = ProductClass.objects.get(pk=self.initial['product_class'])
-
-        #
-        # if hasattr(self, 'instance') and hasattr(self, 'initial') and 'product_class' in self.initial:
-        #     self.instance.product_class = ProductClass.objects.get(pk=self.initial['product_class'])
 
     def _post_clean(self):
         """
@@ -264,9 +265,8 @@ class ProductAdmin(EstoreModelAdminMixin, admin.ModelAdmin):
             'media': self.media,
         })
 
-
         choices = [('', '------------'), ]
-        for ele in ProductClass.objects.filter(owner=request.user):
+        for ele in ProductClass.objects.filter(Q(owner=request.user)|Q(owner__isnull=True)):
             choices.append((ele.id, ele))
 
         if request.method == 'POST':
@@ -335,7 +335,7 @@ class ProductAdmin(EstoreModelAdminMixin, admin.ModelAdmin):
 
         fieldsets = (
             (None, {
-                'fields': (('title', 'product_class', 'product_class_read_only'), ('no', 'bar_code'), 'categories',),
+                'fields': ('belong',('title', 'product_class', 'product_class_read_only'), ('no', 'bar_code'),('price','off_price'), 'primary_pic','categories',),
             }),
             (_('属性'), {
                 'fields': (name for name in fields),
@@ -349,11 +349,17 @@ class ProductAdmin(EstoreModelAdminMixin, admin.ModelAdmin):
 
     def formfield_for_manytomany(self, db_field, request, **kwargs):
         if db_field.name == "pics":
-            kwargs["queryset"] = Picture.objects.filter(owner=request.user)
+            kwargs["queryset"] = Picture.objects.filter(Q(owner=request.user) | Q(owner__isnull=True))
         if db_field.name == "categories":
-            kwargs["queryset"] = ProductCategory.objects.filter(owner=request.user)
+            kwargs["queryset"] = ProductCategory.objects.filter(Q(owner=request.user) | Q(owner__isnull=True))
 
         return super(ProductAdmin, self).formfield_for_manytomany(db_field, request, **kwargs)
+
+    # def formfield_for_foreignkey(self, db_field, request, **kwargs):
+    #     if db_field.name == "belong":
+    #         kwargs["queryset"] = ShopInfo.objects.filter(Q(owner=request.user) | Q(owner__isnull=True))
+    #
+    #     return super(ProductAdmin, self).formfield_for_foreignkey(db_field, request, **kwargs)
 
 class AttributeOptionInline(EstoreModelAdminMixin, admin.TabularInline):
     model = AttributeOption
@@ -361,7 +367,7 @@ class AttributeOptionInline(EstoreModelAdminMixin, admin.TabularInline):
 
 @admin.register(AttributeOptionGroup)
 class AttributeOptionGroupAdmin(EstoreModelAdminMixin, admin.ModelAdmin):
-    list_display = ('name', 'option_summary','owner')
+    list_display = ('name', 'option_summary', 'owner')
     inlines = [AttributeOptionInline, ]
 
 
@@ -374,10 +380,9 @@ class ProductAttributeInline(EstoreModelAdminMixin, admin.TabularInline):
     def media(self):
         return super(ProductAttributeInline, self).media + forms.Media(css={'all': ('css/estore.css',)})
 
-
     def formfield_for_foreignkey(self, db_field, request, **kwargs):
         if db_field.name == "option_group":
-            kwargs["queryset"] = AttributeOptionGroup.objects.filter(owner=request.user)
+            kwargs["queryset"] = AttributeOptionGroup.objects.filter(Q(owner=request.user) | Q(owner__isnull=True))
 
         return super(ProductAttributeInline, self).formfield_for_foreignkey(db_field, request, **kwargs)
 
@@ -394,6 +399,85 @@ class PictureAdmin(EstoreModelAdminMixin, admin.ModelAdmin):
     list_display_links = ('desc', 'display_picture', 'display_path',)
 
 
+class NoticeInline(EstoreModelAdminMixin, admin.TabularInline):
+    model = Notice
+
 @admin.register(ShopInfo)
-class ShopInfoAdmin(EstoreModelAdminMixin, admin.ModelAdmin):
-    list_display = ('name', 'type')
+class ShopInfoAdmin(admin.ModelAdmin):
+    list_display = ('display_id','name', 'type')
+
+    def formfield_for_foreignkey(self, db_field, request, **kwargs):
+        if db_field.name == "icon":
+            kwargs["queryset"] = Picture.objects.filter(Q(owner=request.user) | Q(owner__isnull=True))
+        return super(ShopInfoAdmin, self).formfield_for_foreignkey(db_field, request, **kwargs)
+
+    def has_module_permission(self, request):
+        if super(ShopInfoAdmin, self).has_module_permission(request):
+            return True
+        return request.user.is_superuser or request.user.is_staff
+
+    def get_queryset(self, request):
+        qs = super(ShopInfoAdmin, self).get_queryset(request)
+        if request.user.is_superuser:
+            return qs
+        return qs.filter(owner=request.user)
+
+    def has_change_permission(self, request, obj=None):
+        has_perm = super(ShopInfoAdmin, self).has_change_permission(request, obj)
+        for_staff_show = request.user.is_staff and obj is None
+        is_owner_obj = getattr(obj, 'owner', None) == request.user
+        return has_perm or for_staff_show or is_owner_obj
+
+    def get_fields(self, request, obj=None):
+        has_perm = super(ShopInfoAdmin, self).has_change_permission(request, obj)
+        if has_perm:
+            return (
+                'owner', ('name', 'type'), ('app_id', 'app_secret'), ('address', 'phone_num'),
+                ('longitude', 'latitude'), 'icon', 'description','banners')
+        else:
+            return (
+            ('name', 'type'), ('app_id', 'app_secret'), ('address', 'phone_num'), ('longitude', 'latitude'), 'icon',
+            'description','banners')
+    inlines = [NoticeInline]
+
+@admin.register(AppMerchant)
+class AppMerchantAdmin(admin.ModelAdmin):
+    pass
+
+# class BasketInline(admin.TabularInline):
+#     model = Basket
+
+
+
+@admin.register(AppCustomer)
+class AppCustomerAdmin(admin.ModelAdmin):
+    list_display = ('display_id','belong','openid','phone_num')
+    readonly_fields = ('id','belong','phone_num','openid','session_key','unionid','user_info','basket')
+    # inlines = [BasketInline]
+    pass
+
+# class AppCustomerInline(admin.StackedInline):
+#     list_display = ('display_id','belong','openid','phone_num')
+#     readonly_fields = ('id','belong','phone_num','openid','session_key','unionid','user_info','basket')
+#     # inlines = [BasketInline]
+#     model = AppCustomer
+#     can_delete = False
+#     pass
+#
+@admin.register(Basket)
+class BasketAdmin(admin.ModelAdmin):
+    pass
+#     inlines = [AppCustomerInline]
+#     # has_add_permission = lambda *args, **kwargs:False
+#     # has_delete_permission = lambda *args, **kwargs:False
+#     # has_change_permission = lambda *args, **kwargs:False
+#     # save_model = lambda *args, **kwargs:False
+#     # def change_view(self, request, object_id, extra_context=None):
+#     #
+#     #     extra_context = extra_context or {}
+#     #     extra_context['readonly'] = True
+#     #     return super(BasketAdmin, self).change_view(request, object_id, extra_context=extra_context)
+
+admin.site.register(BasketLineUnit)
+
+#@todo bug：一个modeladmin里有多个图形选择界面，只有一个是好使的。

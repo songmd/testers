@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from estore.models import Snippet, LANGUAGE_CHOICES, STYLE_CHOICES, ShopInfo
+from .models import *
 
 from django.contrib.auth.models import User
 
@@ -39,14 +39,90 @@ class UserSerializer(serializers.ModelSerializer):
 #         return instance
 
 class SnippetSerializer(serializers.ModelSerializer):
-    owner = serializers.ReadOnlyField(source='owner.username')
+    # owner = serializers.ReadOnlyField(source='owner.username')
     class Meta:
         model = Snippet
         fields = ('owner','id', 'title', 'code', 'linenos', 'language', 'style')
 
+class PictureSerializer(serializers.ModelSerializer):
+    # snippets = serializers.HyperlinkedRelatedField(many=True, view_name='snippet-detail', read_only=True)
+
+    class Meta:
+        model = Picture
+        fields = ('picture', 'desc')
+
+class ProductAttributeSerializer(serializers.ModelSerializer):
+    # snippets = serializers.HyperlinkedRelatedField(many=True, view_name='snippet-detail', read_only=True)
+
+    class Meta:
+        model = ProductAttribute
+        # exclude=[]
+        fields = ( 'code','attributie')
+
+class NoticeSerializer(serializers.ModelSerializer):
+    # snippets = serializers.HyperlinkedRelatedField(many=True, view_name='snippet-detail', read_only=True)
+
+    class Meta:
+        model = Notice
+        fields = ('id','content')
+
 class ShopInfoSerializer(serializers.ModelSerializer):
-    owner = serializers.ReadOnlyField(source='owner.username')
+    # owner = serializers.ReadOnlyField(source='owner.username')
+    # icon = serializers.ReadOnlyField(view_name='picture-detail', format='json')
+    banners = PictureSerializer(many=True)
+    icon = PictureSerializer()
+    notices = NoticeSerializer(many=True)
+    serializers.StringRelatedField(many=True)
     class Meta:
         model = ShopInfo
-        fields = ('id', 'name', 'owner', 'type', 'address', 'phone_num','longitude', 'latitude', 'icon', 'description', 'feature')
+        fields = ('id', 'name', 'owner', 'type', 'address', 'phone_num','longitude', 'latitude', 'icon', 'description','banners','notices')
+
+
+class ProductSerializer(serializers.ModelSerializer):
+    # owner = serializers.ReadOnlyField(source='owner.username')
+    # icon = serializers.ReadOnlyField(view_name='picture-detail', format='json')
+    pics = PictureSerializer(many=True)
+    primary_pic = PictureSerializer()
+    # attributies = ProductAttributeSerializer(many=True)
+    # serializers.StringRelatedField(many=True)
+    attributes = serializers.SerializerMethodField('get_attrbute_dict')
+    class Meta:
+        model = Product
+        fields = ('title', 'attributes', 'description', 'pics','primary_pic','price','off_price')
+    def get_attrbute_dict(self, obj):
+        return obj.attributes_dict()
+
+class BasketLineUnitSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = BasketLineUnit
+        exclude = []
+
+
+class BasketSerializer(serializers.ModelSerializer):
+
+    lines = BasketLineUnitSerializer(many=True)
+
+
+    def update(self, instance, validated_data):
+        # Update the book instance
+        # instance.title = validated_data['title']
+        # instance.save()
+        #
+        # # Delete any pages not included in the request
+        # line_ids = [item['line_id'] for item in validated_data['lines']]
+        # for page in instance.books:
+        #     if page.id not in page_ids:
+        #         page.delete()
+        #
+        # # Create or update page instances that are in the request
+        # for item in validated_data['pages']:
+        #     page = Page(id=item['page_id'], text=item['text'], book=instance)
+        #     page.save()
+
+        return instance
+    class Meta:
+        model = Basket
+        fields = ('status','date_created','date_submitted','lines')
+
 

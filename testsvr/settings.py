@@ -47,7 +47,8 @@ REST_FRAMEWORK = {
     # or allow read-only access for unauthenticated users.
     'DEFAULT_PERMISSION_CLASSES': [
         # 'rest_framework.permissions.DjangoModelPermissionsOrAnonReadOnly'
-    ]
+    ],
+    'EXCEPTION_HANDLER': 'estore.views.custom_exception_handler'
 }
 
 MIDDLEWARE = [
@@ -195,6 +196,6 @@ MEDIA_URL = '/'
 # }
 
 ADMIN_REORDER = (
-    ("网上商城", ("店铺", "商品种类", "商品","商品分类","选项组","图片",)),
+    ("网上商城", ("商户","店铺", "客户","商品种类", "商品","商品分类","选项组","图片",)),
     ("认证和授权", ("用户", "组")),
 )

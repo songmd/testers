@@ -1,0 +1,1734 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<dataSource name="db.sqlite3 [2]">
+  <database-model serializer="dbm" rdbms="SQLITE" format-version="4.7">
+    <root id="1"/>
+    <schema id="2" parent="1" name="main">
+      <Current>1</Current>
+      <Visible>1</Visible>
+    </schema>
+    <collation id="3" parent="1" name="BINARY"/>
+    <collation id="4" parent="1" name="NOCASE"/>
+    <collation id="5" parent="1" name="RTRIM"/>
+    <table id="6" parent="2" name="auth_group"/>
+    <table id="7" parent="2" name="auth_group_permissions"/>
+    <table id="8" parent="2" name="auth_permission"/>
+    <table id="9" parent="2" name="auth_user"/>
+    <table id="10" parent="2" name="auth_user_groups"/>
+    <table id="11" parent="2" name="auth_user_user_permissions"/>
+    <table id="12" parent="2" name="django_admin_log"/>
+    <table id="13" parent="2" name="django_content_type"/>
+    <table id="14" parent="2" name="django_migrations"/>
+    <table id="15" parent="2" name="django_session"/>
+    <table id="16" parent="2" name="estore_address"/>
+    <table id="17" parent="2" name="estore_appcustomer"/>
+    <table id="18" parent="2" name="estore_appmerchant"/>
+    <table id="19" parent="2" name="estore_attributeoption"/>
+    <table id="20" parent="2" name="estore_attributeoptiongroup"/>
+    <table id="21" parent="2" name="estore_basket"/>
+    <table id="22" parent="2" name="estore_basketlineunit"/>
+    <table id="23" parent="2" name="estore_notice"/>
+    <table id="24" parent="2" name="estore_order"/>
+    <table id="25" parent="2" name="estore_picture"/>
+    <table id="26" parent="2" name="estore_product"/>
+    <table id="27" parent="2" name="estore_product_categories"/>
+    <table id="28" parent="2" name="estore_product_pics"/>
+    <table id="29" parent="2" name="estore_productattribute"/>
+    <table id="30" parent="2" name="estore_productattributevalue"/>
+    <table id="31" parent="2" name="estore_productattributevalue_value_multi_option"/>
+    <table id="32" parent="2" name="estore_productcategory"/>
+    <table id="33" parent="2" name="estore_productclass"/>
+    <table id="34" parent="2" name="estore_shopinfo"/>
+    <table id="35" parent="2" name="estore_shopinfo_banners"/>
+    <table id="36" parent="2" name="estore_snippet"/>
+    <table id="37" parent="2" name="sqlite_master">
+      <System>1</System>
+    </table>
+    <table id="38" parent="2" name="sqlite_sequence">
+      <System>1</System>
+    </table>
+    <column id="39" parent="6" name="id">
+      <Position>1</Position>
+      <DataType>integer|0</DataType>
+      <NotNull>1</NotNull>
+      <SequenceIdentity>1</SequenceIdentity>
+    </column>
+    <column id="40" parent="6" name="name">
+      <Position>2</Position>
+      <DataType>varchar(80)|0</DataType>
+      <NotNull>1</NotNull>
+    </column>
+    <index id="41" parent="6" name="sqlite_autoindex_auth_group_1">
+      <NameSurrogate>1</NameSurrogate>
+      <ColNames>name</ColNames>
+      <ColumnCollations></ColumnCollations>
+      <Unique>1</Unique>
+    </index>
+    <key id="42" parent="6">
+      <ColNames>id</ColNames>
+      <Primary>1</Primary>
+    </key>
+    <key id="43" parent="6">
+      <ColNames>name</ColNames>
+      <UnderlyingIndexName>sqlite_autoindex_auth_group_1</UnderlyingIndexName>
+    </key>
+    <column id="44" parent="7" name="id">
+      <Position>1</Position>
+      <DataType>integer|0</DataType>
+      <NotNull>1</NotNull>
+      <SequenceIdentity>1</SequenceIdentity>
+    </column>
+    <column id="45" parent="7" name="group_id">
+      <Position>2</Position>
+      <DataType>integer|0</DataType>
+      <NotNull>1</NotNull>
+    </column>
+    <column id="46" parent="7" name="permission_id">
+      <Position>3</Position>
+      <DataType>integer|0</DataType>
+      <NotNull>1</NotNull>
+    </column>
+    <index id="47" parent="7" name="auth_group_permissions_group_id_permission_id_0cd325b0_uniq">
+      <ColNames>group_id
+permission_id</ColNames>
+      <ColumnCollations>
+</ColumnCollations>
+      <Unique>1</Unique>
+    </index>
+    <index id="48" parent="7" name="auth_group_permissions_group_id_b120cbf9">
+      <ColNames>group_id</ColNames>
+      <ColumnCollations></ColumnCollations>
+    </index>
+    <index id="49" parent="7" name="auth_group_permissions_permission_id_84c5c92e">
+      <ColNames>permission_id</ColNames>
+      <ColumnCollations></ColumnCollations>
+    </index>
+    <key id="50" parent="7">
+      <ColNames>id</ColNames>
+      <Primary>1</Primary>
+    </key>
+    <foreign-key id="51" parent="7">
+      <ColNames>group_id</ColNames>
+      <RefTableName>auth_group</RefTableName>
+      <RefColNames>id</RefColNames>
+      <Deferrable>1</Deferrable>
+      <InitiallyDeferred>1</InitiallyDeferred>
+    </foreign-key>
+    <foreign-key id="52" parent="7">
+      <ColNames>permission_id</ColNames>
+      <RefTableName>auth_permission</RefTableName>
+      <RefColNames>id</RefColNames>
+      <Deferrable>1</Deferrable>
+      <InitiallyDeferred>1</InitiallyDeferred>
+    </foreign-key>
+    <column id="53" parent="8" name="id">
+      <Position>1</Position>
+      <DataType>integer|0</DataType>
+      <NotNull>1</NotNull>
+      <SequenceIdentity>1</SequenceIdentity>
+    </column>
+    <column id="54" parent="8" name="content_type_id">
+      <Position>2</Position>
+      <DataType>integer|0</DataType>
+      <NotNull>1</NotNull>
+    </column>
+    <column id="55" parent="8" name="codename">
+      <Position>3</Position>
+      <DataType>varchar(100)|0</DataType>
+      <NotNull>1</NotNull>
+    </column>
+    <column id="56" parent="8" name="name">
+      <Position>4</Position>
+      <DataType>varchar(255)|0</DataType>
+      <NotNull>1</NotNull>
+    </column>
+    <index id="57" parent="8" name="auth_permission_content_type_id_codename_01ab375a_uniq">
+      <ColNames>content_type_id
+codename</ColNames>
+      <ColumnCollations>
+</ColumnCollations>
+      <Unique>1</Unique>
+    </index>
+    <index id="58" parent="8" name="auth_permission_content_type_id_2f476e4b">
+      <ColNames>content_type_id</ColNames>
+      <ColumnCollations></ColumnCollations>
+    </index>
+    <key id="59" parent="8">
+      <ColNames>id</ColNames>
+      <Primary>1</Primary>
+    </key>
+    <foreign-key id="60" parent="8">
+      <ColNames>content_type_id</ColNames>
+      <RefTableName>django_content_type</RefTableName>
+      <RefColNames>id</RefColNames>
+      <Deferrable>1</Deferrable>
+      <InitiallyDeferred>1</InitiallyDeferred>
+    </foreign-key>
+    <column id="61" parent="9" name="id">
+      <Position>1</Position>
+      <DataType>integer|0</DataType>
+      <NotNull>1</NotNull>
+      <SequenceIdentity>1</SequenceIdentity>
+    </column>
+    <column id="62" parent="9" name="password">
+      <Position>2</Position>
+      <DataType>varchar(128)|0</DataType>
+      <NotNull>1</NotNull>
+    </column>
+    <column id="63" parent="9" name="last_login">
+      <Position>3</Position>
+      <DataType>datetime|0</DataType>
+    </column>
+    <column id="64" parent="9" name="is_superuser">
+      <Position>4</Position>
+      <DataType>bool|0</DataType>
+      <NotNull>1</NotNull>
+    </column>
+    <column id="65" parent="9" name="username">
+      <Position>5</Position>
+      <DataType>varchar(150)|0</DataType>
+      <NotNull>1</NotNull>
+    </column>
+    <column id="66" parent="9" name="first_name">
+      <Position>6</Position>
+      <DataType>varchar(30)|0</DataType>
+      <NotNull>1</NotNull>
+    </column>
+    <column id="67" parent="9" name="email">
+      <Position>7</Position>
+      <DataType>varchar(254)|0</DataType>
+      <NotNull>1</NotNull>
+    </column>
+    <column id="68" parent="9" name="is_staff">
+      <Position>8</Position>
+      <DataType>bool|0</DataType>
+      <NotNull>1</NotNull>
+    </column>
+    <column id="69" parent="9" name="is_active">
+      <Position>9</Position>
+      <DataType>bool|0</DataType>
+      <NotNull>1</NotNull>
+    </column>
+    <column id="70" parent="9" name="date_joined">
+      <Position>10</Position>
+      <DataType>datetime|0</DataType>
+      <NotNull>1</NotNull>
+    </column>
+    <column id="71" parent="9" name="last_name">
+      <Position>11</Position>
+      <DataType>varchar(150)|0</DataType>
+      <NotNull>1</NotNull>
+    </column>
+    <index id="72" parent="9" name="sqlite_autoindex_auth_user_1">
+      <NameSurrogate>1</NameSurrogate>
+      <ColNames>username</ColNames>
+      <ColumnCollations></ColumnCollations>
+      <Unique>1</Unique>
+    </index>
+    <key id="73" parent="9">
+      <ColNames>id</ColNames>
+      <Primary>1</Primary>
+    </key>
+    <key id="74" parent="9">
+      <ColNames>username</ColNames>
+      <UnderlyingIndexName>sqlite_autoindex_auth_user_1</UnderlyingIndexName>
+    </key>
+    <column id="75" parent="10" name="id">
+      <Position>1</Position>
+      <DataType>integer|0</DataType>
+      <NotNull>1</NotNull>
+      <SequenceIdentity>1</SequenceIdentity>
+    </column>
+    <column id="76" parent="10" name="user_id">
+      <Position>2</Position>
+      <DataType>integer|0</DataType>
+      <NotNull>1</NotNull>
+    </column>
+    <column id="77" parent="10" name="group_id">
+      <Position>3</Position>
+      <DataType>integer|0</DataType>
+      <NotNull>1</NotNull>
+    </column>
+    <index id="78" parent="10" name="auth_user_groups_user_id_group_id_94350c0c_uniq">
+      <ColNames>user_id
+group_id</ColNames>
+      <ColumnCollations>
+</ColumnCollations>
+      <Unique>1</Unique>
+    </index>
+    <index id="79" parent="10" name="auth_user_groups_user_id_6a12ed8b">
+      <ColNames>user_id</ColNames>
+      <ColumnCollations></ColumnCollations>
+    </index>
+    <index id="80" parent="10" name="auth_user_groups_group_id_97559544">
+      <ColNames>group_id</ColNames>
+      <ColumnCollations></ColumnCollations>
+    </index>
+    <key id="81" parent="10">
+      <ColNames>id</ColNames>
+      <Primary>1</Primary>
+    </key>
+    <foreign-key id="82" parent="10">
+      <ColNames>user_id</ColNames>
+      <RefTableName>auth_user</RefTableName>
+      <RefColNames>id</RefColNames>
+      <Deferrable>1</Deferrable>
+      <InitiallyDeferred>1</InitiallyDeferred>
+    </foreign-key>
+    <foreign-key id="83" parent="10">
+      <ColNames>group_id</ColNames>
+      <RefTableName>auth_group</RefTableName>
+      <RefColNames>id</RefColNames>
+      <Deferrable>1</Deferrable>
+      <InitiallyDeferred>1</InitiallyDeferred>
+    </foreign-key>
+    <column id="84" parent="11" name="id">
+      <Position>1</Position>
+      <DataType>integer|0</DataType>
+      <NotNull>1</NotNull>
+      <SequenceIdentity>1</SequenceIdentity>
+    </column>
+    <column id="85" parent="11" name="user_id">
+      <Position>2</Position>
+      <DataType>integer|0</DataType>
+      <NotNull>1</NotNull>
+    </column>
+    <column id="86" parent="11" name="permission_id">
+      <Position>3</Position>
+      <DataType>integer|0</DataType>
+      <NotNull>1</NotNull>
+    </column>
+    <index id="87" parent="11" name="auth_user_user_permissions_user_id_permission_id_14a6b632_uniq">
+      <ColNames>user_id
+permission_id</ColNames>
+      <ColumnCollations>
+</ColumnCollations>
+      <Unique>1</Unique>
+    </index>
+    <index id="88" parent="11" name="auth_user_user_permissions_user_id_a95ead1b">
+      <ColNames>user_id</ColNames>
+      <ColumnCollations></ColumnCollations>
+    </index>
+    <index id="89" parent="11" name="auth_user_user_permissions_permission_id_1fbb5f2c">
+      <ColNames>permission_id</ColNames>
+      <ColumnCollations></ColumnCollations>
+    </index>
+    <key id="90" parent="11">
+      <ColNames>id</ColNames>
+      <Primary>1</Primary>
+    </key>
+    <foreign-key id="91" parent="11">
+      <ColNames>user_id</ColNames>
+      <RefTableName>auth_user</RefTableName>
+      <RefColNames>id</RefColNames>
+      <Deferrable>1</Deferrable>
+      <InitiallyDeferred>1</InitiallyDeferred>
+    </foreign-key>
+    <foreign-key id="92" parent="11">
+      <ColNames>permission_id</ColNames>
+      <RefTableName>auth_permission</RefTableName>
+      <RefColNames>id</RefColNames>
+      <Deferrable>1</Deferrable>
+      <InitiallyDeferred>1</InitiallyDeferred>
+    </foreign-key>
+    <column id="93" parent="12" name="id">
+      <Position>1</Position>
+      <DataType>integer|0</DataType>
+      <NotNull>1</NotNull>
+      <SequenceIdentity>1</SequenceIdentity>
+    </column>
+    <column id="94" parent="12" name="object_id">
+      <Position>2</Position>
+      <DataType>text|0</DataType>
+    </column>
+    <column id="95" parent="12" name="object_repr">
+      <Position>3</Position>
+      <DataType>varchar(200)|0</DataType>
+      <NotNull>1</NotNull>
+    </column>
+    <column id="96" parent="12" name="action_flag">
+      <Position>4</Position>
+      <DataType>smallint unsigned|0</DataType>
+      <NotNull>1</NotNull>
+    </column>
+    <column id="97" parent="12" name="change_message">
+      <Position>5</Position>
+      <DataType>text|0</DataType>
+      <NotNull>1</NotNull>
+    </column>
+    <column id="98" parent="12" name="content_type_id">
+      <Position>6</Position>
+      <DataType>integer|0</DataType>
+    </column>
+    <column id="99" parent="12" name="user_id">
+      <Position>7</Position>
+      <DataType>integer|0</DataType>
+      <NotNull>1</NotNull>
+    </column>
+    <column id="100" parent="12" name="action_time">
+      <Position>8</Position>
+      <DataType>datetime|0</DataType>
+      <NotNull>1</NotNull>
+    </column>
+    <index id="101" parent="12" name="django_admin_log_content_type_id_c4bce8eb">
+      <ColNames>content_type_id</ColNames>
+      <ColumnCollations></ColumnCollations>
+    </index>
+    <index id="102" parent="12" name="django_admin_log_user_id_c564eba6">
+      <ColNames>user_id</ColNames>
+      <ColumnCollations></ColumnCollations>
+    </index>
+    <key id="103" parent="12">
+      <ColNames>id</ColNames>
+      <Primary>1</Primary>
+    </key>
+    <foreign-key id="104" parent="12">
+      <ColNames>content_type_id</ColNames>
+      <RefTableName>django_content_type</RefTableName>
+      <RefColNames>id</RefColNames>
+      <Deferrable>1</Deferrable>
+      <InitiallyDeferred>1</InitiallyDeferred>
+    </foreign-key>
+    <foreign-key id="105" parent="12">
+      <ColNames>user_id</ColNames>
+      <RefTableName>auth_user</RefTableName>
+      <RefColNames>id</RefColNames>
+      <Deferrable>1</Deferrable>
+      <InitiallyDeferred>1</InitiallyDeferred>
+    </foreign-key>
+    <column id="106" parent="13" name="id">
+      <Position>1</Position>
+      <DataType>integer|0</DataType>
+      <NotNull>1</NotNull>
+      <SequenceIdentity>1</SequenceIdentity>
+    </column>
+    <column id="107" parent="13" name="app_label">
+      <Position>2</Position>
+      <DataType>varchar(100)|0</DataType>
+      <NotNull>1</NotNull>
+    </column>
+    <column id="108" parent="13" name="model">
+      <Position>3</Position>
+      <DataType>varchar(100)|0</DataType>
+      <NotNull>1</NotNull>
+    </column>
+    <index id="109" parent="13" name="django_content_type_app_label_model_76bd3d3b_uniq">
+      <ColNames>app_label
+model</ColNames>
+      <ColumnCollations>
+</ColumnCollations>
+      <Unique>1</Unique>
+    </index>
+    <key id="110" parent="13">
+      <ColNames>id</ColNames>
+      <Primary>1</Primary>
+    </key>
+    <column id="111" parent="14" name="id">
+      <Position>1</Position>
+      <DataType>integer|0</DataType>
+      <NotNull>1</NotNull>
+      <SequenceIdentity>1</SequenceIdentity>
+    </column>
+    <column id="112" parent="14" name="app">
+      <Position>2</Position>
+      <DataType>varchar(255)|0</DataType>
+      <NotNull>1</NotNull>
+    </column>
+    <column id="113" parent="14" name="name">
+      <Position>3</Position>
+      <DataType>varchar(255)|0</DataType>
+      <NotNull>1</NotNull>
+    </column>
+    <column id="114" parent="14" name="applied">
+      <Position>4</Position>
+      <DataType>datetime|0</DataType>
+      <NotNull>1</NotNull>
+    </column>
+    <key id="115" parent="14">
+      <ColNames>id</ColNames>
+      <Primary>1</Primary>
+    </key>
+    <column id="116" parent="15" name="session_key">
+      <Position>1</Position>
+      <DataType>varchar(40)|0</DataType>
+      <NotNull>1</NotNull>
+    </column>
+    <column id="117" parent="15" name="session_data">
+      <Position>2</Position>
+      <DataType>text|0</DataType>
+      <NotNull>1</NotNull>
+    </column>
+    <column id="118" parent="15" name="expire_date">
+      <Position>3</Position>
+      <DataType>datetime|0</DataType>
+      <NotNull>1</NotNull>
+    </column>
+    <index id="119" parent="15" name="sqlite_autoindex_django_session_1">
+      <NameSurrogate>1</NameSurrogate>
+      <ColNames>session_key</ColNames>
+      <ColumnCollations></ColumnCollations>
+      <Unique>1</Unique>
+    </index>
+    <index id="120" parent="15" name="django_session_expire_date_a5c62663">
+      <ColNames>expire_date</ColNames>
+      <ColumnCollations></ColumnCollations>
+    </index>
+    <key id="121" parent="15">
+      <ColNames>session_key</ColNames>
+      <Primary>1</Primary>
+      <UnderlyingIndexName>sqlite_autoindex_django_session_1</UnderlyingIndexName>
+    </key>
+    <column id="122" parent="16" name="id">
+      <Position>1</Position>
+      <DataType>integer|0</DataType>
+      <NotNull>1</NotNull>
+      <SequenceIdentity>1</SequenceIdentity>
+    </column>
+    <column id="123" parent="16" name="phone_num">
+      <Position>2</Position>
+      <DataType>varchar(16)|0</DataType>
+    </column>
+    <column id="124" parent="16" name="addr">
+      <Position>3</Position>
+      <DataType>varchar(128)|0</DataType>
+      <NotNull>1</NotNull>
+    </column>
+    <column id="125" parent="16" name="owner_id">
+      <Position>4</Position>
+      <DataType>char(32)|0</DataType>
+      <NotNull>1</NotNull>
+    </column>
+    <index id="126" parent="16" name="estore_address_owner_id_331fe20f">
+      <ColNames>owner_id</ColNames>
+      <ColumnCollations></ColumnCollations>
+    </index>
+    <key id="127" parent="16">
+      <ColNames>id</ColNames>
+      <Primary>1</Primary>
+    </key>
+    <foreign-key id="128" parent="16">
+      <ColNames>owner_id</ColNames>
+      <RefTableName>estore_appcustomer</RefTableName>
+      <RefColNames>id</RefColNames>
+      <Deferrable>1</Deferrable>
+      <InitiallyDeferred>1</InitiallyDeferred>
+    </foreign-key>
+    <column id="129" parent="17" name="id">
+      <Position>1</Position>
+      <DataType>char(32)|0</DataType>
+      <NotNull>1</NotNull>
+    </column>
+    <column id="130" parent="17" name="phone_num">
+      <Position>2</Position>
+      <DataType>varchar(16)|0</DataType>
+    </column>
+    <column id="131" parent="17" name="user_info">
+      <Position>3</Position>
+      <DataType>text|0</DataType>
+    </column>
+    <column id="132" parent="17" name="openid">
+      <Position>4</Position>
+      <DataType>varchar(128)|0</DataType>
+    </column>
+    <column id="133" parent="17" name="session_key">
+      <Position>5</Position>
+      <DataType>varchar(128)|0</DataType>
+    </column>
+    <column id="134" parent="17" name="unionid">
+      <Position>6</Position>
+      <DataType>varchar(128)|0</DataType>
+    </column>
+    <column id="135" parent="17" name="belong_id">
+      <Position>7</Position>
+      <DataType>char(32)|0</DataType>
+    </column>
+    <column id="136" parent="17" name="basket_id">
+      <Position>8</Position>
+      <DataType>integer|0</DataType>
+    </column>
+    <index id="137" parent="17" name="sqlite_autoindex_estore_appcustomer_1">
+      <NameSurrogate>1</NameSurrogate>
+      <ColNames>id</ColNames>
+      <ColumnCollations></ColumnCollations>
+      <Unique>1</Unique>
+    </index>
+    <index id="138" parent="17" name="sqlite_autoindex_estore_appcustomer_2">
+      <NameSurrogate>1</NameSurrogate>
+      <ColNames>basket_id</ColNames>
+      <ColumnCollations></ColumnCollations>
+      <Unique>1</Unique>
+    </index>
+    <index id="139" parent="17" name="estore_appcustomer_belong_id_0547f6a1">
+      <ColNames>belong_id</ColNames>
+      <ColumnCollations></ColumnCollations>
+    </index>
+    <key id="140" parent="17">
+      <ColNames>id</ColNames>
+      <Primary>1</Primary>
+      <UnderlyingIndexName>sqlite_autoindex_estore_appcustomer_1</UnderlyingIndexName>
+    </key>
+    <key id="141" parent="17">
+      <ColNames>basket_id</ColNames>
+      <UnderlyingIndexName>sqlite_autoindex_estore_appcustomer_2</UnderlyingIndexName>
+    </key>
+    <foreign-key id="142" parent="17">
+      <ColNames>belong_id</ColNames>
+      <RefTableName>estore_shopinfo</RefTableName>
+      <RefColNames>id</RefColNames>
+      <Deferrable>1</Deferrable>
+      <InitiallyDeferred>1</InitiallyDeferred>
+    </foreign-key>
+    <foreign-key id="143" parent="17">
+      <ColNames>basket_id</ColNames>
+      <RefTableName>estore_basket</RefTableName>
+      <RefColNames>id</RefColNames>
+      <Deferrable>1</Deferrable>
+      <InitiallyDeferred>1</InitiallyDeferred>
+    </foreign-key>
+    <column id="144" parent="18" name="id">
+      <Position>1</Position>
+      <DataType>integer|0</DataType>
+      <NotNull>1</NotNull>
+      <SequenceIdentity>1</SequenceIdentity>
+    </column>
+    <column id="145" parent="18" name="type">
+      <Position>2</Position>
+      <DataType>varchar(16)|0</DataType>
+      <NotNull>1</NotNull>
+    </column>
+    <column id="146" parent="18" name="mch_id">
+      <Position>3</Position>
+      <DataType>varchar(128)|0</DataType>
+    </column>
+    <column id="147" parent="18" name="mch_key">
+      <Position>4</Position>
+      <DataType>varchar(128)|0</DataType>
+    </column>
+    <column id="148" parent="18" name="key_file">
+      <Position>5</Position>
+      <DataType>varchar(100)|0</DataType>
+    </column>
+    <column id="149" parent="18" name="cert_file">
+      <Position>6</Position>
+      <DataType>varchar(100)|0</DataType>
+    </column>
+    <column id="150" parent="18" name="user_id">
+      <Position>7</Position>
+      <DataType>integer|0</DataType>
+      <NotNull>1</NotNull>
+    </column>
+    <index id="151" parent="18" name="sqlite_autoindex_estore_appmerchant_1">
+      <NameSurrogate>1</NameSurrogate>
+      <ColNames>user_id</ColNames>
+      <ColumnCollations></ColumnCollations>
+      <Unique>1</Unique>
+    </index>
+    <key id="152" parent="18">
+      <ColNames>id</ColNames>
+      <Primary>1</Primary>
+    </key>
+    <key id="153" parent="18">
+      <ColNames>user_id</ColNames>
+      <UnderlyingIndexName>sqlite_autoindex_estore_appmerchant_1</UnderlyingIndexName>
+    </key>
+    <foreign-key id="154" parent="18">
+      <ColNames>user_id</ColNames>
+      <RefTableName>auth_user</RefTableName>
+      <RefColNames>id</RefColNames>
+      <Deferrable>1</Deferrable>
+      <InitiallyDeferred>1</InitiallyDeferred>
+    </foreign-key>
+    <column id="155" parent="19" name="id">
+      <Position>1</Position>
+      <DataType>integer|0</DataType>
+      <NotNull>1</NotNull>
+      <SequenceIdentity>1</SequenceIdentity>
+    </column>
+    <column id="156" parent="19" name="option">
+      <Position>2</Position>
+      <DataType>varchar(32)|0</DataType>
+      <NotNull>1</NotNull>
+    </column>
+    <column id="157" parent="19" name="group_id">
+      <Position>3</Position>
+      <DataType>integer|0</DataType>
+      <NotNull>1</NotNull>
+    </column>
+    <column id="158" parent="19" name="owner_id">
+      <Position>4</Position>
+      <DataType>integer|0</DataType>
+    </column>
+    <index id="159" parent="19" name="estore_attributeoption_group_id_option_575ca014_uniq">
+      <ColNames>group_id
+option</ColNames>
+      <ColumnCollations>
+</ColumnCollations>
+      <Unique>1</Unique>
+    </index>
+    <index id="160" parent="19" name="estore_attributeoption_group_id_69b86be1">
+      <ColNames>group_id</ColNames>
+      <ColumnCollations></ColumnCollations>
+    </index>
+    <index id="161" parent="19" name="estore_attributeoption_owner_id_aa01953c">
+      <ColNames>owner_id</ColNames>
+      <ColumnCollations></ColumnCollations>
+    </index>
+    <key id="162" parent="19">
+      <ColNames>id</ColNames>
+      <Primary>1</Primary>
+    </key>
+    <foreign-key id="163" parent="19">
+      <ColNames>group_id</ColNames>
+      <RefTableName>estore_attributeoptiongroup</RefTableName>
+      <RefColNames>id</RefColNames>
+      <Deferrable>1</Deferrable>
+      <InitiallyDeferred>1</InitiallyDeferred>
+    </foreign-key>
+    <foreign-key id="164" parent="19">
+      <ColNames>owner_id</ColNames>
+      <RefTableName>auth_user</RefTableName>
+      <RefColNames>id</RefColNames>
+      <Deferrable>1</Deferrable>
+      <InitiallyDeferred>1</InitiallyDeferred>
+    </foreign-key>
+    <column id="165" parent="20" name="id">
+      <Position>1</Position>
+      <DataType>integer|0</DataType>
+      <NotNull>1</NotNull>
+      <SequenceIdentity>1</SequenceIdentity>
+    </column>
+    <column id="166" parent="20" name="name">
+      <Position>2</Position>
+      <DataType>varchar(32)|0</DataType>
+      <NotNull>1</NotNull>
+    </column>
+    <column id="167" parent="20" name="owner_id">
+      <Position>3</Position>
+      <DataType>integer|0</DataType>
+    </column>
+    <index id="168" parent="20" name="estore_attributeoptiongroup_owner_id_44fca998">
+      <ColNames>owner_id</ColNames>
+      <ColumnCollations></ColumnCollations>
+    </index>
+    <key id="169" parent="20">
+      <ColNames>id</ColNames>
+      <Primary>1</Primary>
+    </key>
+    <foreign-key id="170" parent="20">
+      <ColNames>owner_id</ColNames>
+      <RefTableName>auth_user</RefTableName>
+      <RefColNames>id</RefColNames>
+      <Deferrable>1</Deferrable>
+      <InitiallyDeferred>1</InitiallyDeferred>
+    </foreign-key>
+    <column id="171" parent="21" name="id">
+      <Position>1</Position>
+      <DataType>integer|0</DataType>
+      <NotNull>1</NotNull>
+      <SequenceIdentity>1</SequenceIdentity>
+    </column>
+    <column id="172" parent="21" name="status">
+      <Position>2</Position>
+      <DataType>varchar(12)|0</DataType>
+      <NotNull>1</NotNull>
+    </column>
+    <column id="173" parent="21" name="date_created">
+      <Position>3</Position>
+      <DataType>datetime|0</DataType>
+      <NotNull>1</NotNull>
+    </column>
+    <column id="174" parent="21" name="date_submitted">
+      <Position>4</Position>
+      <DataType>datetime|0</DataType>
+    </column>
+    <key id="175" parent="21">
+      <ColNames>id</ColNames>
+      <Primary>1</Primary>
+    </key>
+    <column id="176" parent="22" name="id">
+      <Position>1</Position>
+      <DataType>integer|0</DataType>
+      <NotNull>1</NotNull>
+      <SequenceIdentity>1</SequenceIdentity>
+    </column>
+    <column id="177" parent="22" name="quantity">
+      <Position>2</Position>
+      <DataType>integer unsigned|0</DataType>
+      <NotNull>1</NotNull>
+    </column>
+    <column id="178" parent="22" name="price">
+      <Position>3</Position>
+      <DataType>decimal|0</DataType>
+    </column>
+    <column id="179" parent="22" name="date_created">
+      <Position>4</Position>
+      <DataType>datetime|0</DataType>
+      <NotNull>1</NotNull>
+    </column>
+    <column id="180" parent="22" name="basket_id">
+      <Position>5</Position>
+      <DataType>integer|0</DataType>
+    </column>
+    <column id="181" parent="22" name="product_id">
+      <Position>6</Position>
+      <DataType>integer|0</DataType>
+    </column>
+    <index id="182" parent="22" name="estore_basketlineunit_basket_id_ee877a66">
+      <ColNames>basket_id</ColNames>
+      <ColumnCollations></ColumnCollations>
+    </index>
+    <index id="183" parent="22" name="estore_basketlineunit_product_id_ce18d334">
+      <ColNames>product_id</ColNames>
+      <ColumnCollations></ColumnCollations>
+    </index>
+    <key id="184" parent="22">
+      <ColNames>id</ColNames>
+      <Primary>1</Primary>
+    </key>
+    <foreign-key id="185" parent="22">
+      <ColNames>basket_id</ColNames>
+      <RefTableName>estore_basket</RefTableName>
+      <RefColNames>id</RefColNames>
+      <Deferrable>1</Deferrable>
+      <InitiallyDeferred>1</InitiallyDeferred>
+    </foreign-key>
+    <foreign-key id="186" parent="22">
+      <ColNames>product_id</ColNames>
+      <RefTableName>estore_product</RefTableName>
+      <RefColNames>id</RefColNames>
+      <Deferrable>1</Deferrable>
+      <InitiallyDeferred>1</InitiallyDeferred>
+    </foreign-key>
+    <column id="187" parent="23" name="id">
+      <Position>1</Position>
+      <DataType>integer|0</DataType>
+      <NotNull>1</NotNull>
+      <SequenceIdentity>1</SequenceIdentity>
+    </column>
+    <column id="188" parent="23" name="content">
+      <Position>2</Position>
+      <DataType>text|0</DataType>
+      <NotNull>1</NotNull>
+    </column>
+    <column id="189" parent="23" name="owner_id">
+      <Position>3</Position>
+      <DataType>char(32)|0</DataType>
+      <NotNull>1</NotNull>
+    </column>
+    <index id="190" parent="23" name="estore_notice_owner_id_f46fb2c4">
+      <ColNames>owner_id</ColNames>
+      <ColumnCollations></ColumnCollations>
+    </index>
+    <key id="191" parent="23">
+      <ColNames>id</ColNames>
+      <Primary>1</Primary>
+    </key>
+    <foreign-key id="192" parent="23">
+      <ColNames>owner_id</ColNames>
+      <RefTableName>estore_shopinfo</RefTableName>
+      <RefColNames>id</RefColNames>
+      <Deferrable>1</Deferrable>
+      <InitiallyDeferred>1</InitiallyDeferred>
+    </foreign-key>
+    <column id="193" parent="24" name="id">
+      <Position>1</Position>
+      <DataType>integer|0</DataType>
+      <NotNull>1</NotNull>
+      <SequenceIdentity>1</SequenceIdentity>
+    </column>
+    <column id="194" parent="24" name="number">
+      <Position>2</Position>
+      <DataType>varchar(128)|0</DataType>
+      <NotNull>1</NotNull>
+    </column>
+    <column id="195" parent="24" name="shipping_method">
+      <Position>3</Position>
+      <DataType>varchar(128)|0</DataType>
+      <NotNull>1</NotNull>
+    </column>
+    <column id="196" parent="24" name="shipping_code">
+      <Position>4</Position>
+      <DataType>varchar(128)|0</DataType>
+      <NotNull>1</NotNull>
+    </column>
+    <column id="197" parent="24" name="status">
+      <Position>5</Position>
+      <DataType>varchar(100)|0</DataType>
+      <NotNull>1</NotNull>
+    </column>
+    <column id="198" parent="24" name="basket_id">
+      <Position>6</Position>
+      <DataType>integer|0</DataType>
+    </column>
+    <column id="199" parent="24" name="consumer_id">
+      <Position>7</Position>
+      <DataType>char(32)|0</DataType>
+    </column>
+    <column id="200" parent="24" name="shipping_address_id">
+      <Position>8</Position>
+      <DataType>integer|0</DataType>
+    </column>
+    <index id="201" parent="24" name="sqlite_autoindex_estore_order_1">
+      <NameSurrogate>1</NameSurrogate>
+      <ColNames>number</ColNames>
+      <ColumnCollations></ColumnCollations>
+      <Unique>1</Unique>
+    </index>
+    <index id="202" parent="24" name="estore_order_basket_id_7594dc48">
+      <ColNames>basket_id</ColNames>
+      <ColumnCollations></ColumnCollations>
+    </index>
+    <index id="203" parent="24" name="estore_order_consumer_id_74e2553c">
+      <ColNames>consumer_id</ColNames>
+      <ColumnCollations></ColumnCollations>
+    </index>
+    <index id="204" parent="24" name="estore_order_shipping_address_id_ce8ec16a">
+      <ColNames>shipping_address_id</ColNames>
+      <ColumnCollations></ColumnCollations>
+    </index>
+    <key id="205" parent="24">
+      <ColNames>id</ColNames>
+      <Primary>1</Primary>
+    </key>
+    <key id="206" parent="24">
+      <ColNames>number</ColNames>
+      <UnderlyingIndexName>sqlite_autoindex_estore_order_1</UnderlyingIndexName>
+    </key>
+    <foreign-key id="207" parent="24">
+      <ColNames>basket_id</ColNames>
+      <RefTableName>estore_basket</RefTableName>
+      <RefColNames>id</RefColNames>
+      <Deferrable>1</Deferrable>
+      <InitiallyDeferred>1</InitiallyDeferred>
+    </foreign-key>
+    <foreign-key id="208" parent="24">
+      <ColNames>consumer_id</ColNames>
+      <RefTableName>estore_appcustomer</RefTableName>
+      <RefColNames>id</RefColNames>
+      <Deferrable>1</Deferrable>
+      <InitiallyDeferred>1</InitiallyDeferred>
+    </foreign-key>
+    <foreign-key id="209" parent="24">
+      <ColNames>shipping_address_id</ColNames>
+      <RefTableName>estore_address</RefTableName>
+      <RefColNames>id</RefColNames>
+      <Deferrable>1</Deferrable>
+      <InitiallyDeferred>1</InitiallyDeferred>
+    </foreign-key>
+    <column id="210" parent="25" name="id">
+      <Position>1</Position>
+      <DataType>integer|0</DataType>
+      <NotNull>1</NotNull>
+      <SequenceIdentity>1</SequenceIdentity>
+    </column>
+    <column id="211" parent="25" name="desc">
+      <Position>2</Position>
+      <DataType>varchar(32)|0</DataType>
+      <NotNull>1</NotNull>
+    </column>
+    <column id="212" parent="25" name="picture">
+      <Position>3</Position>
+      <DataType>varchar(100)|0</DataType>
+      <NotNull>1</NotNull>
+    </column>
+    <column id="213" parent="25" name="owner_id">
+      <Position>4</Position>
+      <DataType>integer|0</DataType>
+    </column>
+    <index id="214" parent="25" name="estore_picture_owner_id_1b468355">
+      <ColNames>owner_id</ColNames>
+      <ColumnCollations></ColumnCollations>
+    </index>
+    <key id="215" parent="25">
+      <ColNames>id</ColNames>
+      <Primary>1</Primary>
+    </key>
+    <foreign-key id="216" parent="25">
+      <ColNames>owner_id</ColNames>
+      <RefTableName>auth_user</RefTableName>
+      <RefColNames>id</RefColNames>
+      <Deferrable>1</Deferrable>
+      <InitiallyDeferred>1</InitiallyDeferred>
+    </foreign-key>
+    <column id="217" parent="26" name="id">
+      <Position>1</Position>
+      <DataType>integer|0</DataType>
+      <NotNull>1</NotNull>
+      <SequenceIdentity>1</SequenceIdentity>
+    </column>
+    <column id="218" parent="26" name="title">
+      <Position>2</Position>
+      <DataType>varchar(32)|0</DataType>
+      <NotNull>1</NotNull>
+    </column>
+    <column id="219" parent="26" name="no">
+      <Position>3</Position>
+      <DataType>varchar(32)|0</DataType>
+    </column>
+    <column id="220" parent="26" name="bar_code">
+      <Position>4</Position>
+      <DataType>varchar(32)|0</DataType>
+    </column>
+    <column id="221" parent="26" name="rating">
+      <Position>5</Position>
+      <DataType>real|0</DataType>
+    </column>
+    <column id="222" parent="26" name="description">
+      <Position>6</Position>
+      <DataType>text|0</DataType>
+    </column>
+    <column id="223" parent="26" name="owner_id">
+      <Position>7</Position>
+      <DataType>integer|0</DataType>
+    </column>
+    <column id="224" parent="26" name="product_class_id">
+      <Position>8</Position>
+      <DataType>integer|0</DataType>
+    </column>
+    <column id="225" parent="26" name="belong_id">
+      <Position>9</Position>
+      <DataType>char(32)|0</DataType>
+    </column>
+    <column id="226" parent="26" name="off_price">
+      <Position>10</Position>
+      <DataType>real|0</DataType>
+    </column>
+    <column id="227" parent="26" name="price">
+      <Position>11</Position>
+      <DataType>real|0</DataType>
+    </column>
+    <column id="228" parent="26" name="primary_pic_id">
+      <Position>12</Position>
+      <DataType>integer|0</DataType>
+    </column>
+    <index id="229" parent="26" name="sqlite_autoindex_estore_product_1">
+      <NameSurrogate>1</NameSurrogate>
+      <ColNames>primary_pic_id</ColNames>
+      <ColumnCollations></ColumnCollations>
+      <Unique>1</Unique>
+    </index>
+    <index id="230" parent="26" name="estore_product_owner_id_2bf3950c">
+      <ColNames>owner_id</ColNames>
+      <ColumnCollations></ColumnCollations>
+    </index>
+    <index id="231" parent="26" name="estore_product_product_class_id_16e094a5">
+      <ColNames>product_class_id</ColNames>
+      <ColumnCollations></ColumnCollations>
+    </index>
+    <index id="232" parent="26" name="estore_product_belong_id_11c65b2f">
+      <ColNames>belong_id</ColNames>
+      <ColumnCollations></ColumnCollations>
+    </index>
+    <key id="233" parent="26">
+      <ColNames>id</ColNames>
+      <Primary>1</Primary>
+    </key>
+    <key id="234" parent="26">
+      <ColNames>primary_pic_id</ColNames>
+      <UnderlyingIndexName>sqlite_autoindex_estore_product_1</UnderlyingIndexName>
+    </key>
+    <foreign-key id="235" parent="26">
+      <ColNames>owner_id</ColNames>
+      <RefTableName>auth_user</RefTableName>
+      <RefColNames>id</RefColNames>
+      <Deferrable>1</Deferrable>
+      <InitiallyDeferred>1</InitiallyDeferred>
+    </foreign-key>
+    <foreign-key id="236" parent="26">
+      <ColNames>product_class_id</ColNames>
+      <RefTableName>estore_productclass</RefTableName>
+      <RefColNames>id</RefColNames>
+      <Deferrable>1</Deferrable>
+      <InitiallyDeferred>1</InitiallyDeferred>
+    </foreign-key>
+    <foreign-key id="237" parent="26">
+      <ColNames>belong_id</ColNames>
+      <RefTableName>estore_shopinfo</RefTableName>
+      <RefColNames>id</RefColNames>
+      <Deferrable>1</Deferrable>
+      <InitiallyDeferred>1</InitiallyDeferred>
+    </foreign-key>
+    <foreign-key id="238" parent="26">
+      <ColNames>primary_pic_id</ColNames>
+      <RefTableName>estore_picture</RefTableName>
+      <RefColNames>id</RefColNames>
+      <Deferrable>1</Deferrable>
+      <InitiallyDeferred>1</InitiallyDeferred>
+    </foreign-key>
+    <column id="239" parent="27" name="id">
+      <Position>1</Position>
+      <DataType>integer|0</DataType>
+      <NotNull>1</NotNull>
+      <SequenceIdentity>1</SequenceIdentity>
+    </column>
+    <column id="240" parent="27" name="product_id">
+      <Position>2</Position>
+      <DataType>integer|0</DataType>
+      <NotNull>1</NotNull>
+    </column>
+    <column id="241" parent="27" name="productcategory_id">
+      <Position>3</Position>
+      <DataType>integer|0</DataType>
+      <NotNull>1</NotNull>
+    </column>
+    <index id="242" parent="27" name="estore_product_categories_product_id_productcategory_id_55b0d75e_uniq">
+      <ColNames>product_id
+productcategory_id</ColNames>
+      <ColumnCollations>
+</ColumnCollations>
+      <Unique>1</Unique>
+    </index>
+    <index id="243" parent="27" name="estore_product_categories_product_id_99a65f12">
+      <ColNames>product_id</ColNames>
+      <ColumnCollations></ColumnCollations>
+    </index>
+    <index id="244" parent="27" name="estore_product_categories_productcategory_id_0eefeb43">
+      <ColNames>productcategory_id</ColNames>
+      <ColumnCollations></ColumnCollations>
+    </index>
+    <key id="245" parent="27">
+      <ColNames>id</ColNames>
+      <Primary>1</Primary>
+    </key>
+    <foreign-key id="246" parent="27">
+      <ColNames>product_id</ColNames>
+      <RefTableName>estore_product</RefTableName>
+      <RefColNames>id</RefColNames>
+      <Deferrable>1</Deferrable>
+      <InitiallyDeferred>1</InitiallyDeferred>
+    </foreign-key>
+    <foreign-key id="247" parent="27">
+      <ColNames>productcategory_id</ColNames>
+      <RefTableName>estore_productcategory</RefTableName>
+      <RefColNames>id</RefColNames>
+      <Deferrable>1</Deferrable>
+      <InitiallyDeferred>1</InitiallyDeferred>
+    </foreign-key>
+    <column id="248" parent="28" name="id">
+      <Position>1</Position>
+      <DataType>integer|0</DataType>
+      <NotNull>1</NotNull>
+      <SequenceIdentity>1</SequenceIdentity>
+    </column>
+    <column id="249" parent="28" name="product_id">
+      <Position>2</Position>
+      <DataType>integer|0</DataType>
+      <NotNull>1</NotNull>
+    </column>
+    <column id="250" parent="28" name="picture_id">
+      <Position>3</Position>
+      <DataType>integer|0</DataType>
+      <NotNull>1</NotNull>
+    </column>
+    <index id="251" parent="28" name="estore_product_pics_product_id_picture_id_d7bd432d_uniq">
+      <ColNames>product_id
+picture_id</ColNames>
+      <ColumnCollations>
+</ColumnCollations>
+      <Unique>1</Unique>
+    </index>
+    <index id="252" parent="28" name="estore_product_pics_product_id_5fd5d807">
+      <ColNames>product_id</ColNames>
+      <ColumnCollations></ColumnCollations>
+    </index>
+    <index id="253" parent="28" name="estore_product_pics_picture_id_bdbc019a">
+      <ColNames>picture_id</ColNames>
+      <ColumnCollations></ColumnCollations>
+    </index>
+    <key id="254" parent="28">
+      <ColNames>id</ColNames>
+      <Primary>1</Primary>
+    </key>
+    <foreign-key id="255" parent="28">
+      <ColNames>product_id</ColNames>
+      <RefTableName>estore_product</RefTableName>
+      <RefColNames>id</RefColNames>
+      <Deferrable>1</Deferrable>
+      <InitiallyDeferred>1</InitiallyDeferred>
+    </foreign-key>
+    <foreign-key id="256" parent="28">
+      <ColNames>picture_id</ColNames>
+      <RefTableName>estore_picture</RefTableName>
+      <RefColNames>id</RefColNames>
+      <Deferrable>1</Deferrable>
+      <InitiallyDeferred>1</InitiallyDeferred>
+    </foreign-key>
+    <column id="257" parent="29" name="id">
+      <Position>1</Position>
+      <DataType>integer|0</DataType>
+      <NotNull>1</NotNull>
+      <SequenceIdentity>1</SequenceIdentity>
+    </column>
+    <column id="258" parent="29" name="name">
+      <Position>2</Position>
+      <DataType>varchar(32)|0</DataType>
+      <NotNull>1</NotNull>
+    </column>
+    <column id="259" parent="29" name="code">
+      <Position>3</Position>
+      <DataType>varchar(32)|0</DataType>
+      <NotNull>1</NotNull>
+    </column>
+    <column id="260" parent="29" name="type">
+      <Position>4</Position>
+      <DataType>varchar(20)|0</DataType>
+      <NotNull>1</NotNull>
+    </column>
+    <column id="261" parent="29" name="required">
+      <Position>5</Position>
+      <DataType>bool|0</DataType>
+      <NotNull>1</NotNull>
+    </column>
+    <column id="262" parent="29" name="option_group_id">
+      <Position>6</Position>
+      <DataType>integer|0</DataType>
+    </column>
+    <column id="263" parent="29" name="owner_id">
+      <Position>7</Position>
+      <DataType>integer|0</DataType>
+    </column>
+    <column id="264" parent="29" name="product_class_id">
+      <Position>8</Position>
+      <DataType>integer|0</DataType>
+      <NotNull>1</NotNull>
+    </column>
+    <index id="265" parent="29" name="estore_productattribute_code_2d51fcfc">
+      <ColNames>code</ColNames>
+      <ColumnCollations></ColumnCollations>
+    </index>
+    <index id="266" parent="29" name="estore_productattribute_option_group_id_b6f5abf2">
+      <ColNames>option_group_id</ColNames>
+      <ColumnCollations></ColumnCollations>
+    </index>
+    <index id="267" parent="29" name="estore_productattribute_owner_id_d79f562e">
+      <ColNames>owner_id</ColNames>
+      <ColumnCollations></ColumnCollations>
+    </index>
+    <index id="268" parent="29" name="estore_productattribute_product_class_id_2ef38dd5">
+      <ColNames>product_class_id</ColNames>
+      <ColumnCollations></ColumnCollations>
+    </index>
+    <key id="269" parent="29">
+      <ColNames>id</ColNames>
+      <Primary>1</Primary>
+    </key>
+    <foreign-key id="270" parent="29">
+      <ColNames>option_group_id</ColNames>
+      <RefTableName>estore_attributeoptiongroup</RefTableName>
+      <RefColNames>id</RefColNames>
+      <Deferrable>1</Deferrable>
+      <InitiallyDeferred>1</InitiallyDeferred>
+    </foreign-key>
+    <foreign-key id="271" parent="29">
+      <ColNames>owner_id</ColNames>
+      <RefTableName>auth_user</RefTableName>
+      <RefColNames>id</RefColNames>
+      <Deferrable>1</Deferrable>
+      <InitiallyDeferred>1</InitiallyDeferred>
+    </foreign-key>
+    <foreign-key id="272" parent="29">
+      <ColNames>product_class_id</ColNames>
+      <RefTableName>estore_productclass</RefTableName>
+      <RefColNames>id</RefColNames>
+      <Deferrable>1</Deferrable>
+      <InitiallyDeferred>1</InitiallyDeferred>
+    </foreign-key>
+    <column id="273" parent="30" name="id">
+      <Position>1</Position>
+      <DataType>integer|0</DataType>
+      <NotNull>1</NotNull>
+      <SequenceIdentity>1</SequenceIdentity>
+    </column>
+    <column id="274" parent="30" name="value_text">
+      <Position>2</Position>
+      <DataType>text|0</DataType>
+    </column>
+    <column id="275" parent="30" name="value_integer">
+      <Position>3</Position>
+      <DataType>integer|0</DataType>
+    </column>
+    <column id="276" parent="30" name="value_boolean">
+      <Position>4</Position>
+      <DataType>bool|0</DataType>
+    </column>
+    <column id="277" parent="30" name="value_float">
+      <Position>5</Position>
+      <DataType>real|0</DataType>
+    </column>
+    <column id="278" parent="30" name="value_richtext">
+      <Position>6</Position>
+      <DataType>text|0</DataType>
+    </column>
+    <column id="279" parent="30" name="value_date">
+      <Position>7</Position>
+      <DataType>date|0</DataType>
+    </column>
+    <column id="280" parent="30" name="value_datetime">
+      <Position>8</Position>
+      <DataType>datetime|0</DataType>
+    </column>
+    <column id="281" parent="30" name="attribute_id">
+      <Position>9</Position>
+      <DataType>integer|0</DataType>
+      <NotNull>1</NotNull>
+    </column>
+    <column id="282" parent="30" name="owner_id">
+      <Position>10</Position>
+      <DataType>integer|0</DataType>
+    </column>
+    <column id="283" parent="30" name="product_id">
+      <Position>11</Position>
+      <DataType>integer|0</DataType>
+      <NotNull>1</NotNull>
+    </column>
+    <column id="284" parent="30" name="value_option_id">
+      <Position>12</Position>
+      <DataType>integer|0</DataType>
+    </column>
+    <index id="285" parent="30" name="estore_productattributevalue_attribute_id_product_id_55591dfb_uniq">
+      <ColNames>attribute_id
+product_id</ColNames>
+      <ColumnCollations>
+</ColumnCollations>
+      <Unique>1</Unique>
+    </index>
+    <index id="286" parent="30" name="estore_productattributevalue_attribute_id_5a61c14f">
+      <ColNames>attribute_id</ColNames>
+      <ColumnCollations></ColumnCollations>
+    </index>
+    <index id="287" parent="30" name="estore_productattributevalue_owner_id_60260ab5">
+      <ColNames>owner_id</ColNames>
+      <ColumnCollations></ColumnCollations>
+    </index>
+    <index id="288" parent="30" name="estore_productattributevalue_product_id_7ab13d50">
+      <ColNames>product_id</ColNames>
+      <ColumnCollations></ColumnCollations>
+    </index>
+    <index id="289" parent="30" name="estore_productattributevalue_value_option_id_eb5b89ab">
+      <ColNames>value_option_id</ColNames>
+      <ColumnCollations></ColumnCollations>
+    </index>
+    <key id="290" parent="30">
+      <ColNames>id</ColNames>
+      <Primary>1</Primary>
+    </key>
+    <foreign-key id="291" parent="30">
+      <ColNames>attribute_id</ColNames>
+      <RefTableName>estore_productattribute</RefTableName>
+      <RefColNames>id</RefColNames>
+      <Deferrable>1</Deferrable>
+      <InitiallyDeferred>1</InitiallyDeferred>
+    </foreign-key>
+    <foreign-key id="292" parent="30">
+      <ColNames>owner_id</ColNames>
+      <RefTableName>auth_user</RefTableName>
+      <RefColNames>id</RefColNames>
+      <Deferrable>1</Deferrable>
+      <InitiallyDeferred>1</InitiallyDeferred>
+    </foreign-key>
+    <foreign-key id="293" parent="30">
+      <ColNames>product_id</ColNames>
+      <RefTableName>estore_product</RefTableName>
+      <RefColNames>id</RefColNames>
+      <Deferrable>1</Deferrable>
+      <InitiallyDeferred>1</InitiallyDeferred>
+    </foreign-key>
+    <foreign-key id="294" parent="30">
+      <ColNames>value_option_id</ColNames>
+      <RefTableName>estore_attributeoption</RefTableName>
+      <RefColNames>id</RefColNames>
+      <Deferrable>1</Deferrable>
+      <InitiallyDeferred>1</InitiallyDeferred>
+    </foreign-key>
+    <column id="295" parent="31" name="id">
+      <Position>1</Position>
+      <DataType>integer|0</DataType>
+      <NotNull>1</NotNull>
+      <SequenceIdentity>1</SequenceIdentity>
+    </column>
+    <column id="296" parent="31" name="productattributevalue_id">
+      <Position>2</Position>
+      <DataType>integer|0</DataType>
+      <NotNull>1</NotNull>
+    </column>
+    <column id="297" parent="31" name="attributeoption_id">
+      <Position>3</Position>
+      <DataType>integer|0</DataType>
+      <NotNull>1</NotNull>
+    </column>
+    <index id="298" parent="31" name="estore_productattributevalue_value_multi_option_productattributevalue_id_attributeoption_id_4a0c0f12_uniq">
+      <ColNames>productattributevalue_id
+attributeoption_id</ColNames>
+      <ColumnCollations>
+</ColumnCollations>
+      <Unique>1</Unique>
+    </index>
+    <index id="299" parent="31" name="estore_productattributevalue_value_multi_option_productattributevalue_id_32171597">
+      <ColNames>productattributevalue_id</ColNames>
+      <ColumnCollations></ColumnCollations>
+    </index>
+    <index id="300" parent="31" name="estore_productattributevalue_value_multi_option_attributeoption_id_39fb6d21">
+      <ColNames>attributeoption_id</ColNames>
+      <ColumnCollations></ColumnCollations>
+    </index>
+    <key id="301" parent="31">
+      <ColNames>id</ColNames>
+      <Primary>1</Primary>
+    </key>
+    <foreign-key id="302" parent="31">
+      <ColNames>productattributevalue_id</ColNames>
+      <RefTableName>estore_productattributevalue</RefTableName>
+      <RefColNames>id</RefColNames>
+      <Deferrable>1</Deferrable>
+      <InitiallyDeferred>1</InitiallyDeferred>
+    </foreign-key>
+    <foreign-key id="303" parent="31">
+      <ColNames>attributeoption_id</ColNames>
+      <RefTableName>estore_attributeoption</RefTableName>
+      <RefColNames>id</RefColNames>
+      <Deferrable>1</Deferrable>
+      <InitiallyDeferred>1</InitiallyDeferred>
+    </foreign-key>
+    <column id="304" parent="32" name="id">
+      <Position>1</Position>
+      <DataType>integer|0</DataType>
+      <NotNull>1</NotNull>
+      <SequenceIdentity>1</SequenceIdentity>
+    </column>
+    <column id="305" parent="32" name="name">
+      <Position>2</Position>
+      <DataType>varchar(32)|0</DataType>
+      <NotNull>1</NotNull>
+    </column>
+    <column id="306" parent="32" name="lft">
+      <Position>3</Position>
+      <DataType>integer unsigned|0</DataType>
+      <NotNull>1</NotNull>
+    </column>
+    <column id="307" parent="32" name="rght">
+      <Position>4</Position>
+      <DataType>integer unsigned|0</DataType>
+      <NotNull>1</NotNull>
+    </column>
+    <column id="308" parent="32" name="tree_id">
+      <Position>5</Position>
+      <DataType>integer unsigned|0</DataType>
+      <NotNull>1</NotNull>
+    </column>
+    <column id="309" parent="32" name="level">
+      <Position>6</Position>
+      <DataType>integer unsigned|0</DataType>
+      <NotNull>1</NotNull>
+    </column>
+    <column id="310" parent="32" name="owner_id">
+      <Position>7</Position>
+      <DataType>integer|0</DataType>
+    </column>
+    <column id="311" parent="32" name="parent_id">
+      <Position>8</Position>
+      <DataType>integer|0</DataType>
+    </column>
+    <index id="312" parent="32" name="estore_productcategory_lft_41085c9a">
+      <ColNames>lft</ColNames>
+      <ColumnCollations></ColumnCollations>
+    </index>
+    <index id="313" parent="32" name="estore_productcategory_rght_adf50f43">
+      <ColNames>rght</ColNames>
+      <ColumnCollations></ColumnCollations>
+    </index>
+    <index id="314" parent="32" name="estore_productcategory_tree_id_9121dbb7">
+      <ColNames>tree_id</ColNames>
+      <ColumnCollations></ColumnCollations>
+    </index>
+    <index id="315" parent="32" name="estore_productcategory_level_7a799503">
+      <ColNames>level</ColNames>
+      <ColumnCollations></ColumnCollations>
+    </index>
+    <index id="316" parent="32" name="estore_productcategory_owner_id_1b4266b2">
+      <ColNames>owner_id</ColNames>
+      <ColumnCollations></ColumnCollations>
+    </index>
+    <index id="317" parent="32" name="estore_productcategory_parent_id_f41d3cd9">
+      <ColNames>parent_id</ColNames>
+      <ColumnCollations></ColumnCollations>
+    </index>
+    <key id="318" parent="32">
+      <ColNames>id</ColNames>
+      <Primary>1</Primary>
+    </key>
+    <foreign-key id="319" parent="32">
+      <ColNames>owner_id</ColNames>
+      <RefTableName>auth_user</RefTableName>
+      <RefColNames>id</RefColNames>
+      <Deferrable>1</Deferrable>
+      <InitiallyDeferred>1</InitiallyDeferred>
+    </foreign-key>
+    <foreign-key id="320" parent="32">
+      <ColNames>parent_id</ColNames>
+      <RefTableName>estore_productcategory</RefTableName>
+      <RefColNames>id</RefColNames>
+      <Deferrable>1</Deferrable>
+      <InitiallyDeferred>1</InitiallyDeferred>
+    </foreign-key>
+    <column id="321" parent="33" name="id">
+      <Position>1</Position>
+      <DataType>integer|0</DataType>
+      <NotNull>1</NotNull>
+      <SequenceIdentity>1</SequenceIdentity>
+    </column>
+    <column id="322" parent="33" name="name">
+      <Position>2</Position>
+      <DataType>varchar(32)|0</DataType>
+      <NotNull>1</NotNull>
+    </column>
+    <column id="323" parent="33" name="requires_shipping">
+      <Position>3</Position>
+      <DataType>bool|0</DataType>
+      <NotNull>1</NotNull>
+    </column>
+    <column id="324" parent="33" name="owner_id">
+      <Position>4</Position>
+      <DataType>integer|0</DataType>
+    </column>
+    <index id="325" parent="33" name="estore_productclass_owner_id_c6a4534d">
+      <ColNames>owner_id</ColNames>
+      <ColumnCollations></ColumnCollations>
+    </index>
+    <key id="326" parent="33">
+      <ColNames>id</ColNames>
+      <Primary>1</Primary>
+    </key>
+    <foreign-key id="327" parent="33">
+      <ColNames>owner_id</ColNames>
+      <RefTableName>auth_user</RefTableName>
+      <RefColNames>id</RefColNames>
+      <Deferrable>1</Deferrable>
+      <InitiallyDeferred>1</InitiallyDeferred>
+    </foreign-key>
+    <column id="328" parent="34" name="id">
+      <Position>1</Position>
+      <DataType>char(32)|0</DataType>
+      <NotNull>1</NotNull>
+    </column>
+    <column id="329" parent="34" name="name">
+      <Position>2</Position>
+      <DataType>varchar(32)|0</DataType>
+      <NotNull>1</NotNull>
+    </column>
+    <column id="330" parent="34" name="app_id">
+      <Position>3</Position>
+      <DataType>varchar(128)|0</DataType>
+    </column>
+    <column id="331" parent="34" name="app_secret">
+      <Position>4</Position>
+      <DataType>varchar(128)|0</DataType>
+    </column>
+    <column id="332" parent="34" name="type">
+      <Position>5</Position>
+      <DataType>varchar(32)|0</DataType>
+    </column>
+    <column id="333" parent="34" name="address">
+      <Position>6</Position>
+      <DataType>varchar(128)|0</DataType>
+    </column>
+    <column id="334" parent="34" name="phone_num">
+      <Position>7</Position>
+      <DataType>varchar(11)|0</DataType>
+    </column>
+    <column id="335" parent="34" name="longitude">
+      <Position>8</Position>
+      <DataType>real|0</DataType>
+    </column>
+    <column id="336" parent="34" name="latitude">
+      <Position>9</Position>
+      <DataType>real|0</DataType>
+    </column>
+    <column id="337" parent="34" name="description">
+      <Position>10</Position>
+      <DataType>text|0</DataType>
+    </column>
+    <column id="338" parent="34" name="icon_id">
+      <Position>11</Position>
+      <DataType>integer|0</DataType>
+    </column>
+    <column id="339" parent="34" name="owner_id">
+      <Position>12</Position>
+      <DataType>integer|0</DataType>
+      <NotNull>1</NotNull>
+    </column>
+    <index id="340" parent="34" name="sqlite_autoindex_estore_shopinfo_1">
+      <NameSurrogate>1</NameSurrogate>
+      <ColNames>id</ColNames>
+      <ColumnCollations></ColumnCollations>
+      <Unique>1</Unique>
+    </index>
+    <index id="341" parent="34" name="sqlite_autoindex_estore_shopinfo_2">
+      <NameSurrogate>1</NameSurrogate>
+      <ColNames>icon_id</ColNames>
+      <ColumnCollations></ColumnCollations>
+      <Unique>1</Unique>
+    </index>
+    <index id="342" parent="34" name="estore_shopinfo_owner_id_2ea2e5a4">
+      <ColNames>owner_id</ColNames>
+      <ColumnCollations></ColumnCollations>
+    </index>
+    <key id="343" parent="34">
+      <ColNames>id</ColNames>
+      <Primary>1</Primary>
+      <UnderlyingIndexName>sqlite_autoindex_estore_shopinfo_1</UnderlyingIndexName>
+    </key>
+    <key id="344" parent="34">
+      <ColNames>icon_id</ColNames>
+      <UnderlyingIndexName>sqlite_autoindex_estore_shopinfo_2</UnderlyingIndexName>
+    </key>
+    <foreign-key id="345" parent="34">
+      <ColNames>icon_id</ColNames>
+      <RefTableName>estore_picture</RefTableName>
+      <RefColNames>id</RefColNames>
+      <Deferrable>1</Deferrable>
+      <InitiallyDeferred>1</InitiallyDeferred>
+    </foreign-key>
+    <foreign-key id="346" parent="34">
+      <ColNames>owner_id</ColNames>
+      <RefTableName>auth_user</RefTableName>
+      <RefColNames>id</RefColNames>
+      <Deferrable>1</Deferrable>
+      <InitiallyDeferred>1</InitiallyDeferred>
+    </foreign-key>
+    <column id="347" parent="35" name="id">
+      <Position>1</Position>
+      <DataType>integer|0</DataType>
+      <NotNull>1</NotNull>
+      <SequenceIdentity>1</SequenceIdentity>
+    </column>
+    <column id="348" parent="35" name="shopinfo_id">
+      <Position>2</Position>
+      <DataType>char(32)|0</DataType>
+      <NotNull>1</NotNull>
+    </column>
+    <column id="349" parent="35" name="picture_id">
+      <Position>3</Position>
+      <DataType>integer|0</DataType>
+      <NotNull>1</NotNull>
+    </column>
+    <index id="350" parent="35" name="estore_shopinfo_banners_shopinfo_id_picture_id_fee7503f_uniq">
+      <ColNames>shopinfo_id
+picture_id</ColNames>
+      <ColumnCollations>
+</ColumnCollations>
+      <Unique>1</Unique>
+    </index>
+    <index id="351" parent="35" name="estore_shopinfo_banners_shopinfo_id_12f16f88">
+      <ColNames>shopinfo_id</ColNames>
+      <ColumnCollations></ColumnCollations>
+    </index>
+    <index id="352" parent="35" name="estore_shopinfo_banners_picture_id_f4168b18">
+      <ColNames>picture_id</ColNames>
+      <ColumnCollations></ColumnCollations>
+    </index>
+    <key id="353" parent="35">
+      <ColNames>id</ColNames>
+      <Primary>1</Primary>
+    </key>
+    <foreign-key id="354" parent="35">
+      <ColNames>shopinfo_id</ColNames>
+      <RefTableName>estore_shopinfo</RefTableName>
+      <RefColNames>id</RefColNames>
+      <Deferrable>1</Deferrable>
+      <InitiallyDeferred>1</InitiallyDeferred>
+    </foreign-key>
+    <foreign-key id="355" parent="35">
+      <ColNames>picture_id</ColNames>
+      <RefTableName>estore_picture</RefTableName>
+      <RefColNames>id</RefColNames>
+      <Deferrable>1</Deferrable>
+      <InitiallyDeferred>1</InitiallyDeferred>
+    </foreign-key>
+    <column id="356" parent="36" name="id">
+      <Position>1</Position>
+      <DataType>integer|0</DataType>
+      <NotNull>1</NotNull>
+      <SequenceIdentity>1</SequenceIdentity>
+    </column>
+    <column id="357" parent="36" name="created">
+      <Position>2</Position>
+      <DataType>datetime|0</DataType>
+      <NotNull>1</NotNull>
+    </column>
+    <column id="358" parent="36" name="title">
+      <Position>3</Position>
+      <DataType>varchar(100)|0</DataType>
+      <NotNull>1</NotNull>
+    </column>
+    <column id="359" parent="36" name="code">
+      <Position>4</Position>
+      <DataType>text|0</DataType>
+      <NotNull>1</NotNull>
+    </column>
+    <column id="360" parent="36" name="linenos">
+      <Position>5</Position>
+      <DataType>bool|0</DataType>
+      <NotNull>1</NotNull>
+    </column>
+    <column id="361" parent="36" name="language">
+      <Position>6</Position>
+      <DataType>varchar(100)|0</DataType>
+      <NotNull>1</NotNull>
+    </column>
+    <column id="362" parent="36" name="style">
+      <Position>7</Position>
+      <DataType>varchar(100)|0</DataType>
+      <NotNull>1</NotNull>
+    </column>
+    <column id="363" parent="36" name="highlighted">
+      <Position>8</Position>
+      <DataType>text|0</DataType>
+      <NotNull>1</NotNull>
+    </column>
+    <column id="364" parent="36" name="owner_id">
+      <Position>9</Position>
+      <DataType>integer|0</DataType>
+      <NotNull>1</NotNull>
+    </column>
+    <index id="365" parent="36" name="estore_snippet_owner_id_1f1e0092">
+      <ColNames>owner_id</ColNames>
+      <ColumnCollations></ColumnCollations>
+    </index>
+    <key id="366" parent="36">
+      <ColNames>id</ColNames>
+      <Primary>1</Primary>
+    </key>
+    <foreign-key id="367" parent="36">
+      <ColNames>owner_id</ColNames>
+      <RefTableName>auth_user</RefTableName>
+      <RefColNames>id</RefColNames>
+      <Deferrable>1</Deferrable>
+      <InitiallyDeferred>1</InitiallyDeferred>
+    </foreign-key>
+    <column id="368" parent="37" name="type">
+      <Position>1</Position>
+      <DataType>text|0</DataType>
+    </column>
+    <column id="369" parent="37" name="name">
+      <Position>2</Position>
+      <DataType>text|0</DataType>
+    </column>
+    <column id="370" parent="37" name="tbl_name">
+      <Position>3</Position>
+      <DataType>text|0</DataType>
+    </column>
+    <column id="371" parent="37" name="rootpage">
+      <Position>4</Position>
+      <DataType>integer|0</DataType>
+    </column>
+    <column id="372" parent="37" name="sql">
+      <Position>5</Position>
+      <DataType>text|0</DataType>
+    </column>
+    <column id="373" parent="38" name="name">
+      <Position>1</Position>
+    </column>
+    <column id="374" parent="38" name="seq">
+      <Position>2</Position>
+    </column>
+  </database-model>
+</dataSource>

@@ -24,6 +24,9 @@ from django.utils.html import format_html
 from django.utils.html import strip_tags
 from django.utils.safestring import mark_safe
 
+import uuid
+
+
 LEXERS = [item for item in get_all_lexers() if item[1]]
 LANGUAGE_CHOICES = sorted([(item[1][0], item[0]) for item in LEXERS])
 STYLE_CHOICES = sorted((item, item) for item in get_all_styles())
@@ -111,15 +114,52 @@ class ProductCategory(MPTTModel):
         verbose_name = _('商品分类')
         verbose_name_plural = _('商品分类')
 
+#商户
+class AppMerchant(models.Model):
+    user = models.OneToOneField('auth.User', related_name='merchant', on_delete=models.CASCADE,verbose_name=_('关联用户'))
+    type =   models.CharField(_('用户类型'),max_length=16, default='appmch',editable=False)
+    mch_id = models.CharField(_('商户微信支付Id'),max_length=128, blank=True, null=True )
+    mch_key = models.CharField(_('商户微信支付密钥'),max_length=128, blank=True, null=True )
+    key_file = models.FileField(_('密钥文件'),blank=True, null=True,upload_to='cert')
+    cert_file = models.FileField(_('证书文件'),blank=True, null=True,upload_to='cert')
+    class Meta:
+        verbose_name = _('商户')
+        verbose_name_plural = _('商户')
+    def __str__(self):
+        return self.user.username
+
+class AppCustomer(models.Model):
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4)
+    belong = models.ForeignKey('ShopInfo', related_name='customers',on_delete=models.CASCADE, blank=True,null=True,verbose_name=_('所属店铺'))
+    basket = models.OneToOneField('Basket',related_name='customer',on_delete=models.PROTECT,verbose_name=_('购物车'))
+    phone_num = models.CharField(_('手机号'), max_length=16, blank=True, null=True)
+    openid = models.CharField(_('微信OpenId'), max_length=128, blank=True, null=True)
+    session_key = models.CharField(_('会话密钥'), max_length=128, blank=True, null=True)
+    unionid = models.CharField(_('统一Id'), max_length=128, blank=True, null=True)
+    user_info = models.TextField(_('用户信息'), max_length=512, blank=True, null=True)
+
+    def display_id(self):
+        return self.id.hex
+    display_id.short_description = _('ID')
+
+    class Meta:
+        verbose_name = _('客户')
+        verbose_name_plural = _('客户')
+    def __str__(self):
+        return self.id.hex
 
 class ShopInfo(models.Model):
 
-    owner = models.ForeignKey('auth.User', on_delete=models.CASCADE )
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+
+    owner = models.ForeignKey('auth.User', on_delete=models.CASCADE, verbose_name=_('所属商户'))
 
     name = models.CharField(max_length=32, verbose_name=_('店铺名称'))
 
-    # owner = models.ForeignKey('auth.User', related_name='shops', on_delete=models.CASCADE, blank=True, null=True,
-    #                           verbose_name=_('商户'))
+    app_id = models.CharField(_('小程序id'),max_length=128, blank=True, null=True )
+
+    app_secret = models.CharField(_('小程序密钥'),max_length=128, blank=True, null=True )
+
 
     type = models.CharField(max_length=32, blank=True, null=True, verbose_name=_('店铺类型'),
                             help_text=_('自定义店铺类型，32个字符以内'))
@@ -133,8 +173,16 @@ class ShopInfo(models.Model):
     # icon = ImageFieldEx(upload_to='shopinfo/icon', blank=True, null=True, verbose_name=_('店铺图标'))
     icon = OneToOneFieldEx(Picture, blank=True, null=True, verbose_name=_('店铺图标'), on_delete=models.SET_NULL)
 
+
     description = models.TextField(max_length=512, blank=True, null=True, verbose_name=_('店铺描述'),
                                    help_text=_('最多500个字符，250个汉字'))
+
+    banners = ManyToManyFieldEx(Picture, blank=True, related_name='banners',verbose_name=_('广告图片'))
+
+    def display_id(self):
+        return self.id.hex
+
+    display_id.short_description = _('ID')
 
     class Meta:
         # name = '1'
@@ -145,6 +193,17 @@ class ShopInfo(models.Model):
     def __str__(self):
         return self.name
 
+class Notice(models.Model):
+    owner = models.ForeignKey(ShopInfo, related_name='notices',on_delete=models.CASCADE, verbose_name=_('所属店铺'))
+    content = models.TextField(_('内容'),max_length=512,help_text=_('最多500个字符，250个汉字'))
+    class Meta:
+        # name = '1'
+        verbose_name = _('公告')
+        verbose_name_plural = _('公告')
+        # permissions = (("view", _("浏览")),)
+
+    def __str__(self):
+        return self.content
 
 class ProductAttributesContainer(object):
     """
@@ -216,14 +275,21 @@ class ProductAttributesContainer(object):
 
 
 class Product(models.Model):
+    owner = models.ForeignKey('auth.User', related_name='products', on_delete=models.CASCADE, blank=True, null=True,
+                              editable=False)
 
-    owner = models.ForeignKey('auth.User',on_delete=models.CASCADE, blank=True, null=True,editable=False)
+    belong = models.ForeignKey(ShopInfo, related_name='products', on_delete=models.CASCADE, blank=True, null=True, verbose_name=_('所属商铺'))
 
     product_class = models.ForeignKey('ProductClass', related_name='products', null=True, blank=True,
                                       on_delete=models.PROTECT, verbose_name=_('种类'))
     # product_class.hidden = True
 
     title = models.CharField(max_length=32, verbose_name=_('名称'))
+
+    primary_pic = OneToOneFieldEx(Picture, blank=True, null=True, related_name='primary',verbose_name=_('首要图片'), on_delete=models.SET_NULL)
+
+    price = models.FloatField(blank=True, null=True, verbose_name=_('价格'))
+    off_price = models.FloatField(blank=True, null=True, verbose_name=_('折扣价格'))
 
     no = models.CharField(max_length=32, verbose_name=_('编号'), blank=True, null=True)
 
@@ -384,14 +450,23 @@ class Product(models.Model):
     # def num_stockrecords(self):
     #     return self.stockrecords.count()
 
-    # @property
-    # def attribute_summary(self):
-    #     """
-    #     Return a string of all of a product's attributes
-    #     """
-    #     attributes = self.attribute_values.all()
-    #     pairs = [attribute.summary() for attribute in attributes]
-    #     return ", ".join(pairs)
+    def attributes_dict(self):
+        ret = {}
+        attributes = self.attribute_values.all()
+        for attr in attributes:
+            ret.update(attr.value_as_dict())
+        return ret
+
+    attributes_dict.short_description = _('attributes')
+
+    @property
+    def attribute_summary(self):
+        """
+        Return a string of all of a product's attributes
+        """
+        attributes = self.attribute_values.all()
+        pairs = [attribute.summary() for attribute in attributes]
+        return '{' + ", ".join(pairs) + '}'
 
     # def get_title(self):
     #     """
@@ -824,6 +899,9 @@ class ProductAttributeValue(models.Model):
         """
         return u"%s: %s" % (self.attribute.name, self.value_as_text)
 
+    def value_as_dict(self):
+        return {self.attribute.code:str(self.value_as_text)}
+
     @property
     def value_as_text(self):
         """
@@ -906,3 +984,73 @@ class AttributeOption(models.Model):
         unique_together = ('group', 'option')
         verbose_name = _('选项')
         verbose_name_plural = _('选项')
+
+
+
+
+
+class Address(models.Model):
+    phone_num = models.CharField(_('联系电话'), max_length=16, blank=True, null=True)
+    addr = models.CharField(_('地址'), max_length=128)
+    owner = models.ForeignKey(AppCustomer, related_name='addresses', on_delete=models.CASCADE,
+                              verbose_name=_("客户"))
+
+
+class Basket(models.Model):
+
+    OPEN,   FROZEN, SUBMITTED = (
+        "Open", "Saved", "Submitted")
+    STATUS_CHOICES = (
+        (OPEN, _("Open - currently active")),
+        (FROZEN, _("Frozen - the basket cannot be modified")),
+        (SUBMITTED, _("Submitted - has been ordered at the checkout")),
+    )
+    status = models.CharField(
+        _("状态"), max_length=12, default=OPEN, choices=STATUS_CHOICES)
+
+    date_created = models.DateTimeField(_("生成时间"), auto_now_add=True)
+    date_submitted = models.DateTimeField(_("提交时间"), null=True, blank=True)
+
+    def __str__(self):
+        return self.customer.id.hex
+    class Meta:
+        verbose_name = _('购物车')
+        verbose_name_plural = _('购物车')
+
+
+class BasketLineUnit(models.Model):
+    basket = models.ForeignKey(Basket, on_delete=models.CASCADE, related_name='lines', verbose_name=_("购物车"))
+    product = models.ForeignKey(Product, on_delete=models.CASCADE,related_name='basket_lines', verbose_name=_("商品"))
+    quantity = models.PositiveIntegerField(_('数量'), default=1)
+    price = models.DecimalField(_('成交价格'), decimal_places=2, max_digits=12, null=True)
+    date_created = models.DateTimeField(_("生成时间"), auto_now_add=True)
+
+
+class Order(models.Model):
+    number = models.CharField(
+        _("订单号"), max_length=128, db_index=True, unique=True)
+
+    basket = models.ForeignKey(Basket, verbose_name=_("购物车"),
+                               null=True, blank=True, on_delete=models.SET_NULL)
+
+    consumer = models.ForeignKey(AppCustomer, related_name='orders', null=True, blank=True,
+                                 verbose_name=_("客户"), on_delete=models.SET_NULL)
+
+    # Billing address is not always required (eg paying by gift card)
+    shipping_address = models.ForeignKey(Address, null=True, blank=True, verbose_name=_("送货地址"),
+                                         on_delete=models.SET_NULL)
+
+    shipping_method = models.CharField(_("送货方式"), max_length=128, blank=True)
+
+    shipping_code = models.CharField(_('快递单号'), blank=True, max_length=128, default="")
+
+    status = models.CharField(_("订单状态"), max_length=100, blank=True)
+
+    class Meta:
+        verbose_name = _("订单")
+        verbose_name_plural = _("订单")
+
+# @todo 研究购物流程
+# 显示产品列表  点添加按钮  显示添加结果  查看购物车细节  或者开始结账  收集结账必要的的信息（ 确认用户身份地址 输入支付 等等）
+# 预览订单提交订单页面提交  返回确认结果
+# 一系列的add和edit 增删改查
